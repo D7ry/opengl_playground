@@ -4,8 +4,9 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-// clang-format onen
+// clang-format on
 #include "input.h"
+#include "lab.h"
 
 /* Constants */
 const size_t WINDOW_WIDTH = 800;
@@ -18,6 +19,7 @@ const size_t VIEWPORT_HEIGHT = 800;
 void render_loop(GLFWwindow* window) {
     printf("Entering render loop...\n");
     fflush(stdout);
+    Lab::hello_triangle();
     while (!glfwWindowShouldClose(window)) {
         glfwSwapBuffers(window);
         glfwPollEvents();

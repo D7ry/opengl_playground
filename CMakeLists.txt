@@ -18,6 +18,7 @@ add_executable(${PROJECT_NAME}
     ${GLAD_SRC}
     src/opengl_playground_main.cpp
     src/input.cpp
+    src/shader.cpp
 )
 
 # ---------- exeternal linkage ----------- #
@@ -34,3 +35,6 @@ target_include_directories(${PROJECT_NAME}
     PRIVATE ${CMAKE_SOURCE_DIR}/include
 )
 
+target_precompile_headers(${PROJECT_NAME} 
+    PRIVATE src/pch.h
+)
