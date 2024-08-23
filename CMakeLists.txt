@@ -17,6 +17,7 @@ set(GLAD_INCLUDE extern/glad/include)
 add_executable(${PROJECT_NAME} 
     ${GLAD_SRC}
     src/opengl_playground_main.cpp
+    src/input.cpp
 )
 
 # ---------- exeternal linkage ----------- #
