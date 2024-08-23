@@ -19,10 +19,11 @@ const size_t VIEWPORT_HEIGHT = 800;
 void render_loop(GLFWwindow* window) {
     printf("Entering render loop...\n");
     fflush(stdout);
-    Lab::hello_triangle();
+    Lab::HelloTriangle::init();
     while (!glfwWindowShouldClose(window)) {
         glfwSwapBuffers(window);
         glfwPollEvents();
+        Lab::HelloTriangle::tick();
     }
     printf("Exiting render loop...\n");
 }

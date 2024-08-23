@@ -19,8 +19,8 @@ class Shader
         // compile shader, return whether it's succeeded
         bool compile();
 
+        unsigned int shader_id = 0;
       private:
         std::string source_file;
         unsigned int shader_kind;
-        unsigned int shader_id = 0;
 };
