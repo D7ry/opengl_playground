@@ -5,6 +5,8 @@
 #include <glm/gtc/matrix_transform.hpp> // rotate and translate
 
 #include "camera.h"
+#include "delta_time.h"
+#include "input.h"
 
 namespace Lab
 {
@@ -12,12 +14,16 @@ namespace HelloTriangle
 {
 unsigned int vao;
 SimpleShaderProgram* shaders = nullptr;
+DeltaTimer delta_time;
+
 Camera camera = Camera(
-    {0.f, 0.f, 3.f},  // position
-    0, 0, 0
+    {0.f, 0.f, 3.f}, // position
+    0,
+    0,
+    0
 );
-void mouse_callback(GLFWwindow* window, double xpos, double ypos)
-{
+
+void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
     static bool first_mouse_input = true;
     static double prev_x = 0;
     static double prev_y = 0;
@@ -44,7 +50,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 
 void Lab::HelloTriangle::init(GLFWwindow* window) {
     INFO("Init Hello Triangle");
-    glfwSetCursorPosCallback(window, mouse_callback);  
+    glfwSetCursorPosCallback(window, mouse_callback);
     // clang-format off
 
     // 3 vertices of a triangle
@@ -122,10 +128,51 @@ void Lab::HelloTriangle::init(GLFWwindow* window) {
         if (!success) {
             ERROR("Shader program building failed");
         }
+
+        // bind movement inputs
+        {
+            static const int CAMERA_SPEED = 3;
+            auto input = InputManager::get_singleton();
+            input->register_key_callback(GLFW_KEY_ESCAPE, InputManager::KeyCallbackCondition::PRESS,
+                [window]() {
+                    glfwSetWindowShouldClose(window, true);
+                }
+            );
+            input->register_key_callback(
+                GLFW_KEY_W,
+                InputManager::KeyCallbackCondition::HOLD,
+                []() {
+                    camera.mod_position(delta_time.get() * CAMERA_SPEED, 0, 0);
+                }
+            );
+            input->register_key_callback(
+                GLFW_KEY_S,
+                InputManager::KeyCallbackCondition::HOLD,
+                []() {
+                    camera.mod_position(-delta_time.get() * CAMERA_SPEED, 0, 0);
+                }
+            );
+            input->register_key_callback(
+                GLFW_KEY_A,
+                InputManager::KeyCallbackCondition::HOLD,
+                []() {
+                    camera.mod_position(0, 0, delta_time.get() * CAMERA_SPEED);
+                }
+            );
+            input->register_key_callback(
+                GLFW_KEY_D,
+                InputManager::KeyCallbackCondition::HOLD,
+                []() {
+                    camera.mod_position(0, 0, -delta_time.get() * CAMERA_SPEED);
+                }
+            );
+        }
     }
 }
 
 void Lab::HelloTriangle::tick() {
+    delta_time.tick();
+    InputManager::get_singleton()->tick(delta_time.get());
     glClearColor(0, 0, 0, 0);
     glClear(GL_COLOR_BUFFER_BIT);
 

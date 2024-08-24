@@ -16,8 +16,9 @@ class Camera
     glm::mat4 get_view_matrix();
 
     void mod_yaw(float yaw);
-
     void mod_pitch(float pitch);
+    void mod_position(float x, float y, float z, bool follow_direction=false);
+
 
   private:
     glm::vec3 position;

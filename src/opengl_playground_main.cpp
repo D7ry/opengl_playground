@@ -75,7 +75,14 @@ int main() {
     }
 
     // main render loop
-    glfwSetKeyCallback(window, Input::key_callback);
+    auto keyCallback = [](GLFWwindow* window,
+                          int key,
+                          int scancode,
+                          int action,
+                          int mods) {
+        InputManager::get_singleton()->on_key_input(window, key, scancode, action, mods);
+    };
+    glfwSetKeyCallback(window, keyCallback);
     render_loop(window);
 
     return 0;

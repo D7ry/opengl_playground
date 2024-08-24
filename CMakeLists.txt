@@ -25,6 +25,7 @@ add_executable(${PROJECT_NAME}
     src/camera.cpp
     src/shader.cpp
     src/lab.cpp
+    src/delta_time.cpp
     src/stb_image_impl.cpp # impl of the stb_image library
 )
 
