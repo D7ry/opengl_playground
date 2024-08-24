@@ -3,7 +3,7 @@
 // clang-format off
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-
+#include <spdlog/spdlog.h>
 // clang-format on
 #include "input.h"
 #include "lab.h"
@@ -14,10 +14,9 @@ const size_t WINDOW_HEIGHT = 800;
 const size_t VIEWPORT_WIDTH = 800;
 const size_t VIEWPORT_HEIGHT = 800;
 
-
 // main render loop
 void render_loop(GLFWwindow* window) {
-    printf("Entering render loop...\n");
+    INFO("Render loop started");
     fflush(stdout);
     Lab::HelloTriangle::init();
     while (!glfwWindowShouldClose(window)) {
@@ -25,9 +24,8 @@ void render_loop(GLFWwindow* window) {
         glfwPollEvents();
         Lab::HelloTriangle::tick();
     }
-    printf("Exiting render loop...\n");
+    INFO("Render loop ended");
 }
-
 
 namespace Callback
 {
@@ -37,9 +35,10 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
 } // namespace Callback
 
 int main() {
+    spdlog::set_pattern("\033[1;37m[%^%l%$] [%s:%#] (%!) %v\033[0m");
     GLFWwindow* window = nullptr;
     { // initialize glfw
-        printf("Initializing GLFW... \n");
+        INFO("Initializing GLFW...");
         glfwInit();
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -52,12 +51,12 @@ int main() {
             return -1;
         }
         glfwMakeContextCurrent(window);
-        printf("... success\n");
+        INFO("...success");
     }
     { // initialize openGL
         // glad
         if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-            std::cout << "Failed to initialize GLAD" << std::endl;
+            ERROR("Failed to initialize GLAD");
             return -1;
         }
         // set viewport to occupy the whole screen. Currently we only need one
@@ -68,7 +67,9 @@ int main() {
             VIEWPORT_WIDTH, // width
             VIEWPORT_HEIGHT // height
         );
-        glfwSetFramebufferSizeCallback(window, Callback::framebuffer_size_callback);
+        glfwSetFramebufferSizeCallback(
+            window, Callback::framebuffer_size_callback
+        );
     }
 
     // main render loop

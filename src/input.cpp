@@ -11,7 +11,6 @@ void Input::key_callback(
     int mods
 ) {
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
-        printf("Exiting window\n");
         glfwSetWindowShouldClose(window, GLFW_TRUE);
     }
 }

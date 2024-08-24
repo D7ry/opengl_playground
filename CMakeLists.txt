@@ -9,6 +9,8 @@ project(OpenGL_playground)
 find_package(OpenGL REQUIRED)
 # glfw
 find_package(glfw3 REQUIRED)
+# spdlog
+find_package(spdlog REQUIRED)
 # glad
 set(GLAD_SRC extern/glad/src/glad.c)
 set(GLAD_INCLUDE extern/glad/include)
@@ -19,11 +21,13 @@ add_executable(${PROJECT_NAME}
     src/opengl_playground_main.cpp
     src/input.cpp
     src/shader.cpp
+    src/lab.cpp
 )
 
 # ---------- exeternal linkage ----------- #
 target_link_libraries(${PROJECT_NAME} 
     ${OPENGL_LIBRARIES}
+    spdlog::spdlog 
     glfw
 )
 
