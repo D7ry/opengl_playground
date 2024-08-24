@@ -5,9 +5,8 @@ namespace Lab
 {
 namespace HelloTriangle
 {
-
 unsigned int vao;
-unsigned int shader_program;
+SimpleShaderProgram* shaders = nullptr;
 } // namespace HelloTriangle
 } // namespace Lab
 
@@ -79,29 +78,19 @@ void Lab::HelloTriangle::init() {
 
         // shader setup
         // create & compile shader program
-        shader_program = glCreateProgram();
-        {
-            Shader vertex_shader
-                = Shader("../shaders/hello_triangle.vert", GL_VERTEX_SHADER);
-            Shader fragment_shader
-                = Shader("../shaders/hello_triangle.frag", GL_FRAGMENT_SHADER);
-
-            bool success = vertex_shader.compile() && fragment_shader.compile();
-            if (!success) {
-                ERROR("Error: shader compilation failed");
-            }
-
-            // attach shaders
-            glAttachShader(shader_program, vertex_shader.shader_id);
-            glAttachShader(shader_program, fragment_shader.shader_id);
-            glLinkProgram(shader_program);
+        shaders = new SimpleShaderProgram("../shaders/hello_triangle.vert", "../shaders/hello_triangle.frag");
+        bool success = shaders->build();
+        if (!success) {
+            ERROR("Shader program building failed");
         }
     }
 }
 
 void Lab::HelloTriangle::tick() {
-    // enable shader program
-    glUseProgram(shader_program);
+    glClearColor(0, 0, 0, 0);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    shaders->use();
     // bind vao
     glBindVertexArray(vao);
     // draw triangles. currently we have 3 triangles
