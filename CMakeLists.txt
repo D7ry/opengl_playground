@@ -15,6 +15,7 @@ find_package(spdlog REQUIRED)
 set(GLAD_SRC extern/glad/src/glad.c)
 set(GLAD_INCLUDE extern/glad/include)
 set(STB_INCLUDE extern/stb)
+set(GLM_INCLUDE extern/glm)
 
 # ---------- Project Files ---------- #
 add_executable(${PROJECT_NAME} 
@@ -39,6 +40,7 @@ target_include_directories(${PROJECT_NAME}
     PRIVATE ${GLAD_INCLUDE}
     PRIVATE ${OPENGL_INCLUDE_DIR}
     PRIVATE ${GLFW_INCLUDE_DIRS}
+    PRIVATE ${GLM_INCLUDE}
     PRIVATE ${CMAKE_SOURCE_DIR}/include
 )
 
