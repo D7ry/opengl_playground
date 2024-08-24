@@ -14,6 +14,7 @@ find_package(spdlog REQUIRED)
 # glad
 set(GLAD_SRC extern/glad/src/glad.c)
 set(GLAD_INCLUDE extern/glad/include)
+set(STB_INCLUDE extern/stb)
 
 # ---------- Project Files ---------- #
 add_executable(${PROJECT_NAME} 
@@ -22,6 +23,7 @@ add_executable(${PROJECT_NAME}
     src/input.cpp
     src/shader.cpp
     src/lab.cpp
+    src/stb_image_impl.cpp # impl of the stb_image library
 )
 
 # ---------- exeternal linkage ----------- #
@@ -33,6 +35,7 @@ target_link_libraries(${PROJECT_NAME}
 
 # ---------- includes ---------- #
 target_include_directories(${PROJECT_NAME} 
+    PRIVATE ${STB_INCLUDE}
     PRIVATE ${GLAD_INCLUDE}
     PRIVATE ${OPENGL_INCLUDE_DIR}
     PRIVATE ${GLFW_INCLUDE_DIRS}
