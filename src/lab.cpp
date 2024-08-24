@@ -1,5 +1,8 @@
-#include "spdlog/spdlog.h"
 #include "lab.h"
+#include "spdlog/spdlog.h"
+
+#include "glm/glm.hpp"
+#include <glm/gtc/matrix_transform.hpp> // rotate and translate
 
 namespace Lab
 {
@@ -78,7 +81,9 @@ void Lab::HelloTriangle::init() {
 
         // shader setup
         // create & compile shader program
-        shaders = new SimpleShaderProgram("../shaders/hello_triangle.vert", "../shaders/hello_triangle.frag");
+        shaders = new SimpleShaderProgram(
+            "../shaders/hello_triangle.vert", "../shaders/hello_triangle.frag"
+        );
         bool success = shaders->build();
         if (!success) {
             ERROR("Shader program building failed");
@@ -91,6 +96,24 @@ void Lab::HelloTriangle::tick() {
     glClear(GL_COLOR_BUFFER_BIT);
 
     shaders->use();
+
+    { // transform the triangle
+        // model matrix
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f)); 
+        // view matrix
+        glm::mat4 view = glm::mat4(1.0f);
+        view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f)); 
+        // proj matrix
+        glm::mat4 proj = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
+
+        // set transform matrices
+        shaders->set_uniform_mat4("u_model", model);
+        shaders->set_uniform_mat4("u_view", view);
+        shaders->set_uniform_mat4("u_proj", proj);
+
+    }
+
     // bind vao
     glBindVertexArray(vao);
     // draw triangles. currently we have 3 triangles

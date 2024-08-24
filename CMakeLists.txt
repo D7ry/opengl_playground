@@ -22,6 +22,7 @@ add_executable(${PROJECT_NAME}
     ${GLAD_SRC}
     src/opengl_playground_main.cpp
     src/input.cpp
+    src/camera.cpp
     src/shader.cpp
     src/lab.cpp
     src/stb_image_impl.cpp # impl of the stb_image library

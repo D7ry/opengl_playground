@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include "glm/glm.hpp"
 
 class Shader
 {
@@ -55,6 +56,7 @@ class SimpleShaderProgram
     void set_uniform_bool(const std::string& name, bool value);
     void set_uniform_int(const std::string& name, int value);
     void set_uniform_float(const std::string& name, float value);
+    void set_uniform_mat4(const std::string& name, const glm::mat4& mat4);
 
   private:
     unsigned int program_id = 0;

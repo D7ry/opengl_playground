@@ -1,10 +1,12 @@
-#include <fstream>
-#include <iostream>
-#include <sstream>
+#include <fstream> // reading shader file
+#include <sstream> // reading shader file
 
-#include "shader.h"
 #include "spdlog/spdlog.h"
 
+#include "glm/glm.hpp"
+#include <glm/gtc/type_ptr.hpp>
+
+#include "shader.h"
 bool Shader::compile() {
     std::ifstream is(this->source_file);
     if (!is.is_open()) {
@@ -32,7 +34,7 @@ bool Shader::compile() {
         glGetShaderiv(this->shader_id, GL_COMPILE_STATUS, &success);
         if (!success) {
             glGetShaderInfoLog(this->shader_id, 512, NULL, infoLog);
-            std::cout << "Shader compilation failed: " << infoLog << std::endl;
+            ERROR("Shader compilation failed : {}", std::string(infoLog));
             return false;
         }
     }
@@ -96,4 +98,12 @@ void SimpleShaderProgram::set_uniform_float(
     float value
 ) {
     glUniform1i(glGetUniformLocation(this->program_id, name.c_str()), value);
+}
+
+void SimpleShaderProgram::set_uniform_mat4(
+    const std::string& name,
+    const glm::mat4& mat4
+) {
+    int uniform_id = glGetUniformLocation(this->program_id, name.c_str());
+    glUniformMatrix4fv(uniform_id, 1, GL_FALSE, glm::value_ptr(mat4));
 }
