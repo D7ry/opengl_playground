@@ -14,7 +14,7 @@ namespace Lab
 namespace HelloTriangle
 {
 // init hellotriangle, set up buffers and send data to gpu
-void init();
+void init(GLFWwindow* window);
 
 void tick();
 } // namespace HelloTriangle

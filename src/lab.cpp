@@ -4,17 +4,47 @@
 #include "glm/glm.hpp"
 #include <glm/gtc/matrix_transform.hpp> // rotate and translate
 
+#include "camera.h"
+
 namespace Lab
 {
 namespace HelloTriangle
 {
 unsigned int vao;
 SimpleShaderProgram* shaders = nullptr;
+Camera camera = Camera(
+    {0.f, 0.f, 3.f},  // position
+    0, 0, 0
+);
+void mouse_callback(GLFWwindow* window, double xpos, double ypos)
+{
+    static bool first_mouse_input = true;
+    static double prev_x = 0;
+    static double prev_y = 0;
+    if (first_mouse_input) {
+        first_mouse_input = false;
+        prev_x = xpos;
+        prev_y = ypos;
+        return;
+    }
+    float offset_x = xpos - prev_x;
+    float offset_y = ypos - prev_y;
+    prev_x = xpos;
+    prev_y = ypos;
+
+    float sensitivity = 0.1f;
+    offset_x *= sensitivity;
+    offset_y *= sensitivity;
+
+    camera.mod_yaw(offset_x);
+    camera.mod_pitch(-offset_y);
+}
 } // namespace HelloTriangle
 } // namespace Lab
 
-void Lab::HelloTriangle::init() {
+void Lab::HelloTriangle::init(GLFWwindow* window) {
     INFO("Init Hello Triangle");
+    glfwSetCursorPosCallback(window, mouse_callback);  
     // clang-format off
 
     // 3 vertices of a triangle
@@ -26,7 +56,11 @@ void Lab::HelloTriangle::init() {
         // positions         // colors
          0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,   // bottom right
         -0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,   // bottom left
-         0.0f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f    // top 
+         0.0f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f,    // top 
+        
+         0.5f, -0.5f, -0.5f,  1.0f, 0.0f, 0.0f,   // bottom right
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.0f,   // bottom left
+         0.0f,  0.5f, -0.5f,  0.0f, 0.0f, 1.0f    // top 
     };
     // clang-format on
 
@@ -100,18 +134,20 @@ void Lab::HelloTriangle::tick() {
     { // transform the triangle
         // model matrix
         glm::mat4 model = glm::mat4(1.0f);
-        model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f)); 
+        model = glm::rotate(
+            model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f)
+        );
         // view matrix
-        glm::mat4 view = glm::mat4(1.0f);
-        view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f)); 
+        glm::mat4 view = camera.get_view_matrix();
         // proj matrix
-        glm::mat4 proj = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
+        glm::mat4 proj = glm::perspective(
+            glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f
+        );
 
         // set transform matrices
         shaders->set_uniform_mat4("u_model", model);
         shaders->set_uniform_mat4("u_view", view);
         shaders->set_uniform_mat4("u_proj", proj);
-
     }
 
     // bind vao
@@ -120,6 +156,6 @@ void Lab::HelloTriangle::tick() {
     glDrawArrays(
         GL_TRIANGLES, // mode
         0,            // first
-        3             // count
+        6             // count
     );
 }

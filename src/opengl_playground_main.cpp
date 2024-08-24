@@ -18,7 +18,7 @@ const size_t VIEWPORT_HEIGHT = 800;
 void render_loop(GLFWwindow* window) {
     INFO("Render loop started");
     fflush(stdout);
-    Lab::HelloTriangle::init();
+    Lab::HelloTriangle::init(window);
     while (!glfwWindowShouldClose(window)) {
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -45,6 +45,8 @@ int main() {
         window = glfwCreateWindow(
             WINDOW_WIDTH, WINDOW_HEIGHT, "OpenGLPlayground", NULL, NULL
         );
+        // disable cursor by default
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         if (!window) {
             printf("Failed to create GLFW window\n");
             glfwTerminate();
