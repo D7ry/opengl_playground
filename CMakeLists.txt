@@ -30,7 +30,7 @@ add_subdirectory(extern/spdlog)
 
 # ---------- Project Files ---------- #
 add_executable(${PROJECT_NAME} 
-    src/opengl_playground_main.cpp
+    src/main.cpp
     src/input.cpp
     src/camera.cpp
     src/shader.cpp
