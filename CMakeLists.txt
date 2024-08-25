@@ -64,3 +64,8 @@ target_include_directories(${PROJECT_NAME}
 target_precompile_headers(${PROJECT_NAME} 
     PRIVATE "$<$<COMPILE_LANGUAGE:CXX>:${CMAKE_CURRENT_SOURCE_DIR}/src/pch.h>"
 )
+
+# ---------- macros ----------#
+if(CMAKE_BUILD_TYPE MATCHES Release)
+    add_compile_definitions(NDEBUG)
+endif()

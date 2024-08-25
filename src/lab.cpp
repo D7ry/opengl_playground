@@ -21,6 +21,7 @@ Camera camera = Camera(
 );
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
+    ImGui_ImplGlfw_CursorPosCallback(window, xpos, ypos);
     static bool first_mouse_input = true;
     static double prev_x = 0;
     static double prev_y = 0;
@@ -172,6 +173,11 @@ void Lab::HelloTriangle::init(GLFWwindow* window) {
 }
 
 void Lab::HelloTriangle::tick() {
+    {
+        ImGui::Begin("Here");
+        ImGui::Button("click me");
+        ImGui::End();
+    }
     delta_time.tick();
     InputManager::get_singleton()->tick(delta_time.get());
 

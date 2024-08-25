@@ -1,8 +1,28 @@
-#include "stdio.h"
-#include <iostream>
 #include "input.h"
 #include "lab.h"
+#include "stdio.h"
+#include <iostream>
 
+// global engine states,
+// TODO: need to migrate to a proper class soon
+namespace EngineState
+{
+// whether glfw window should capture the cursor
+bool window_capture_cursor = false;
+}
+
+void global_key_callback(
+    GLFWwindow* window,
+    int key,
+    int scancode,
+    int action,
+    int mods
+) {
+    InputManager::get_singleton()->on_key_input(
+        window, key, scancode, action, mods
+    );
+    ImGui_ImplGlfw_KeyCallback(window, key, scancode, action, mods);
+}
 
 // main render loop
 void render_loop(GLFWwindow* window) {
@@ -39,7 +59,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
 } // namespace Callback
 
 int main() {
-    spdlog::set_pattern("\033[1;37m[%^%l%$] [%s:%#] (%!) %v\033[0m");
+    Logging::init();
     GLFWwindow* window = nullptr;
     { // initialize glfw
         INFO("Initializing GLFW...");
@@ -49,8 +69,6 @@ int main() {
         window = glfwCreateWindow(
             WINDOW_WIDTH, WINDOW_HEIGHT, "OpenGLPlayground", NULL, NULL
         );
-        // disable cursor by default
-        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         if (!window) {
             printf("Failed to create GLFW window\n");
             glfwTerminate();
@@ -97,24 +115,21 @@ int main() {
         InputManager::get_singleton()->register_key_callback(
             IMGUI_INPUT_CAPTURE_KEY,
             InputManager::KeyCallbackCondition::PRESS,
-            []() { // flip imgui input capture
-                auto io = ImGui::GetIO();
-                io.WantCaptureKeyboard = !io.WantCaptureKeyboard;
-                io.WantCaptureMouse = !io.WantCaptureMouse;
+            [window]() {
+                DEBUG("Toggle cursor");
+                auto CURSOR_FLAG = EngineState::window_capture_cursor
+                                       ? GLFW_CURSOR_DISABLED
+                                       : GLFW_CURSOR_NORMAL;
+                EngineState::window_capture_cursor
+                    = !EngineState::window_capture_cursor;
+                glfwSetInputMode(window, GLFW_CURSOR, CURSOR_FLAG);
             }
         );
     }
 
     // main render loop
     { // set up InputManager
-        auto keyCallback
-            = [](GLFWwindow* window, int key, int scancode, int action, int mods
-              ) {
-                  InputManager::get_singleton()->on_key_input(
-                      window, key, scancode, action, mods
-                  );
-              };
-        glfwSetKeyCallback(window, keyCallback);
+        glfwSetKeyCallback(window, global_key_callback);
     }
     render_loop(window);
 
