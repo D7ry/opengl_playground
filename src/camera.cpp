@@ -1,9 +1,11 @@
+#include "constants.h"
 #include "camera.h"
 #include <glm/gtc/matrix_transform.hpp> // lookat
 #include "spdlog/spdlog.h"
 
+// TODO: implement roll
+
 // up vector of world space, pointing straight up
-const glm::vec3 WORLD_UP_VECTOR = {0.f, 1.f, 0.f};
 
 glm::mat4 Camera::get_view_matrix() { return this->view_matrix; }
 

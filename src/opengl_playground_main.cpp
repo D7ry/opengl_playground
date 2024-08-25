@@ -4,6 +4,9 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <spdlog/spdlog.h>
+#include "imgui.h"
+#include "backends/imgui_impl_glfw.h"
+#include "backends/imgui_impl_opengl3.h"
 // clang-format on
 #include "input.h"
 #include "lab.h"
@@ -20,9 +23,21 @@ void render_loop(GLFWwindow* window) {
     fflush(stdout);
     Lab::HelloTriangle::init(window);
     while (!glfwWindowShouldClose(window)) {
-        glfwSwapBuffers(window);
         glfwPollEvents();
+        { // imgui prologue
+            ImGui_ImplOpenGL3_NewFrame();
+            ImGui_ImplGlfw_NewFrame();
+            ImGui::NewFrame();
+        }
+
         Lab::HelloTriangle::tick();
+
+        { // imgui epilogue
+            ImGui::Render();
+            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+        }
+
+        glfwSwapBuffers(window);
     }
     INFO("Render loop ended");
 }
@@ -72,6 +87,16 @@ int main() {
         glfwSetFramebufferSizeCallback(
             window, Callback::framebuffer_size_callback
         );
+    }
+
+    { // initialize imgui
+        IMGUI_CHECKVERSION();
+        ImGui::CreateContext();
+        ImGuiIO& io = ImGui::GetIO();
+        io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+        io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+        ImGui_ImplGlfw_InitForOpenGL(window, true);
+        ImGui_ImplOpenGL3_Init();
     }
 
     // main render loop

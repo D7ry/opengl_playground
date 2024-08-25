@@ -1,14 +1,11 @@
-// stl
-#include <string>
-#include <vector>
-
-#include <glm/glm.hpp>
-
+#pragma once
 // opengl
+// turn off clang-format due to rearranging includes, glad needs to come before
+//
+// glfw3 header
 // clang-format off
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 // clang-format on
 
-const glm::vec3 WORLD_UP_VECTOR = {0.f, 1.f, 0.f};

@@ -12,21 +12,37 @@ set(STB_IMG_SRC extern/stb/stb_image_impl.cpp)
 set(GLM_INCLUDE extern/glm)
 set(GLFW_INCLUDE extern/glfw/include)
 set(SPDLOG_INCLUDE extern/spdlog/include)
+set(IMGUI_INCLUDE extern/imgui)
+
+set(IMGUI_SRC 
+    extern/imgui/imgui.cpp
+    extern/imgui/imgui_draw.cpp
+    extern/imgui/imgui_widgets.cpp
+    extern/imgui/imgui_tables.cpp
+    extern/imgui/backends/imgui_impl_glfw.cpp
+    extern/imgui/backends/imgui_impl_opengl3.cpp
+)
 
 # submodules
 add_subdirectory(extern/glfw)
 add_subdirectory(extern/spdlog)
 
+
 # ---------- Project Files ---------- #
 add_executable(${PROJECT_NAME} 
-    ${GLAD_SRC}
-    ${STB_IMG_SRC}
     src/opengl_playground_main.cpp
     src/input.cpp
     src/camera.cpp
     src/shader.cpp
     src/lab.cpp
     src/delta_time.cpp
+)
+
+# library sources
+target_sources(${PROJECT_NAME} 
+    PRIVATE ${GLAD_SRC}
+    PRIVATE ${STB_IMG_SRC}
+    PRIVATE ${IMGUI_SRC}
 )
 
 # ---------- exeternal linkage ----------- #
@@ -41,6 +57,7 @@ target_include_directories(${PROJECT_NAME}
     PRIVATE ${GLAD_INCLUDE}
     PRIVATE ${GLFW_INCLUDE}
     PRIVATE ${GLM_INCLUDE}
+    PRIVATE ${IMGUI_INCLUDE}
     PRIVATE ${CMAKE_SOURCE_DIR}/include
 )
 
