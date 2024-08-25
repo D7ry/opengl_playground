@@ -15,7 +15,7 @@ DeltaTimer delta_time;
 
 Camera camera = Camera(
     {0.f, 0.f, 3.f}, // position
-    0,
+    -90, // look at front
     0,
     0
 );
@@ -62,6 +62,7 @@ void Lab::HelloTriangle::init(GLFWwindow* window) {
         -0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,   // bottom left
          0.0f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f,    // top 
         
+         // the other triangle is slightly behind the main triangle(higher z value)
          0.5f, -0.5f, -0.5f,  1.0f, 0.0f, 0.0f,   // bottom right
         -0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.0f,   // bottom left
          0.0f,  0.5f, -0.5f,  0.0f, 0.0f, 1.0f    // top 
@@ -140,28 +141,42 @@ void Lab::HelloTriangle::init(GLFWwindow* window) {
                 GLFW_KEY_W,
                 InputManager::KeyCallbackCondition::HOLD,
                 []() {
-                    camera.mod_position(delta_time.get() * CAMERA_SPEED, 0, 0);
+                    camera.mod_position(0, 0, -delta_time.get() * CAMERA_SPEED);
                 }
             );
             input->register_key_callback(
                 GLFW_KEY_S,
                 InputManager::KeyCallbackCondition::HOLD,
                 []() {
-                    camera.mod_position(-delta_time.get() * CAMERA_SPEED, 0, 0);
+                    camera.mod_position(0, 0, delta_time.get() * CAMERA_SPEED);
                 }
             );
             input->register_key_callback(
                 GLFW_KEY_A,
                 InputManager::KeyCallbackCondition::HOLD,
                 []() {
-                    camera.mod_position(0, 0, delta_time.get() * CAMERA_SPEED);
+                    camera.mod_position(-delta_time.get() * CAMERA_SPEED, 0, 0);
                 }
             );
             input->register_key_callback(
                 GLFW_KEY_D,
                 InputManager::KeyCallbackCondition::HOLD,
                 []() {
-                    camera.mod_position(0, 0, -delta_time.get() * CAMERA_SPEED);
+                    camera.mod_position(delta_time.get() * CAMERA_SPEED, 0, 0);
+                }
+            );
+            input->register_key_callback(
+                GLFW_KEY_SPACE,
+                InputManager::KeyCallbackCondition::HOLD,
+                []() {
+                    camera.mod_position(0, delta_time.get() * CAMERA_SPEED, 0);
+                }
+            );
+            input->register_key_callback(
+                GLFW_KEY_LEFT_CONTROL,
+                InputManager::KeyCallbackCondition::HOLD,
+                []() {
+                    camera.mod_position(0, -delta_time.get() * CAMERA_SPEED, 0);
                 }
             );
         }
@@ -174,8 +189,11 @@ void Lab::HelloTriangle::init(GLFWwindow* window) {
 
 void Lab::HelloTriangle::tick() {
     {
-        ImGui::Begin("Here");
-        ImGui::Button("click me");
+        ImGui::Begin("Camera Data");
+        auto camera_pos = camera.get_position();
+        auto camera_ypr = camera.get_yaw_pitch_roll();
+        ImGui::Text("Camera pos: %f %f %f", camera_pos.x, camera_pos.y, camera_pos.z);
+        ImGui::Text("Camera yaw pitch roll: %f %f %f", camera_ypr.x, camera_ypr.y, camera_ypr.z);
         ImGui::End();
     }
     delta_time.tick();
@@ -187,7 +205,7 @@ void Lab::HelloTriangle::tick() {
         // model matrix
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::rotate(
-            model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f)
+            model, glm::radians(0.f), glm::vec3(1.0f, 0.0f, 0.0f)
         );
         // view matrix
         glm::mat4 view = camera.get_view_matrix();

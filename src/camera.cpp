@@ -1,7 +1,7 @@
-#include "constants.h"
 #include "camera.h"
-#include <glm/gtc/matrix_transform.hpp> // lookat
+#include "constants.h"
 #include "spdlog/spdlog.h"
+#include <glm/gtc/matrix_transform.hpp> // lookat
 
 // TODO: implement roll
 
@@ -15,11 +15,12 @@ void Camera::update_view_matrix() {
     glm::vec3 direction;
     direction.x = cos(glm::radians(yaw));
     direction.z = sin(glm::radians(yaw));
-    direction.y = sin(glm::radians(pitch));  
+    direction.y = sin(glm::radians(pitch));
     direction = glm::normalize(direction);
 
     // lookat handles the adjusting of the actual up vector internally
-    this->view_matrix = glm::lookAt(this->position, this->position + direction, up);
+    this->view_matrix
+        = glm::lookAt(this->position, this->position + direction, up);
 }
 
 void Camera::mod_yaw(float yaw) {
@@ -39,14 +40,29 @@ void Camera::mod_pitch(float pitch) {
     update_view_matrix();
 }
 
-void Camera::mod_position(float x, float y, float z, bool follow_direction) {
-    if (!follow_direction) {
-        this->position.x += x;
-        this->position.y += y;
-        this->position.z += z;
-    } else {
-        glm::vec3 xyz = {x, y, z};
-
+void Camera::mod_position(
+    float x,
+    float y,
+    float z,
+    bool follow_yaw,
+    bool follow_pitch
+) {
+    // swap x and z to align the camera axis with world space
+    std::swap(x, z);
+    x = -x; // adjust camera forward sign
+    glm::vec3 offset(x, y, z);
+    if (follow_yaw) {
+        float yaw_rad = glm::radians(this->yaw);
+        glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), -yaw_rad, glm::vec3(0.0f, 1.0f, 0.0f));
+        offset = glm::vec3(rotation * glm::vec4(offset, 0.0f));
     }
+
+    if (follow_pitch) {
+        float pitch_rad = glm::radians(this->pitch);
+        glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), pitch_rad, glm::vec3(1.0f, 0.0f, 0.0f));
+        offset = glm::vec3(rotation * glm::vec4(offset, 0.0f));
+    }
+
+    this->position += offset;
     update_view_matrix();
 }
