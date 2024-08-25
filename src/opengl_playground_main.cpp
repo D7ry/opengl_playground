@@ -1,21 +1,8 @@
 #include "stdio.h"
 #include <iostream>
-// clang-format off
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-#include <spdlog/spdlog.h>
-#include "imgui.h"
-#include "backends/imgui_impl_glfw.h"
-#include "backends/imgui_impl_opengl3.h"
-// clang-format on
 #include "input.h"
 #include "lab.h"
 
-/* Constants */
-const size_t WINDOW_WIDTH = 800;
-const size_t WINDOW_HEIGHT = 800;
-const size_t VIEWPORT_WIDTH = 800;
-const size_t VIEWPORT_HEIGHT = 800;
 
 // main render loop
 void render_loop(GLFWwindow* window) {
@@ -23,6 +10,8 @@ void render_loop(GLFWwindow* window) {
     fflush(stdout);
     Lab::HelloTriangle::init(window);
     while (!glfwWindowShouldClose(window)) {
+        glClearColor(0, 0, 0, 0);
+        glClear(GL_COLOR_BUFFER_BIT);
         glfwPollEvents();
         { // imgui prologue
             ImGui_ImplOpenGL3_NewFrame();
@@ -93,21 +82,40 @@ int main() {
         IMGUI_CHECKVERSION();
         ImGui::CreateContext();
         ImGuiIO& io = ImGui::GetIO();
-        io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-        io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+        io.ConfigFlags
+            |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
+        io.ConfigFlags
+            |= ImGuiConfigFlags_NavEnableGamepad; // Enable Gamepad Controls
+        // disable input capture
+        io.WantCaptureMouse = false;
+        io.WantCaptureKeyboard = false;
         ImGui_ImplGlfw_InitForOpenGL(window, true);
         ImGui_ImplOpenGL3_Init();
+
+        // key to flip imgui input capture
+        const int IMGUI_INPUT_CAPTURE_KEY = GLFW_KEY_TAB;
+        InputManager::get_singleton()->register_key_callback(
+            IMGUI_INPUT_CAPTURE_KEY,
+            InputManager::KeyCallbackCondition::PRESS,
+            []() { // flip imgui input capture
+                auto io = ImGui::GetIO();
+                io.WantCaptureKeyboard = !io.WantCaptureKeyboard;
+                io.WantCaptureMouse = !io.WantCaptureMouse;
+            }
+        );
     }
 
     // main render loop
-    auto keyCallback = [](GLFWwindow* window,
-                          int key,
-                          int scancode,
-                          int action,
-                          int mods) {
-        InputManager::get_singleton()->on_key_input(window, key, scancode, action, mods);
-    };
-    glfwSetKeyCallback(window, keyCallback);
+    { // set up InputManager
+        auto keyCallback
+            = [](GLFWwindow* window, int key, int scancode, int action, int mods
+              ) {
+                  InputManager::get_singleton()->on_key_input(
+                      window, key, scancode, action, mods
+                  );
+              };
+        glfwSetKeyCallback(window, keyCallback);
+    }
     render_loop(window);
 
     return 0;

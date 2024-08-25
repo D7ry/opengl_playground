@@ -62,5 +62,5 @@ target_include_directories(${PROJECT_NAME}
 )
 
 target_precompile_headers(${PROJECT_NAME} 
-    PRIVATE src/pch.h
+    PRIVATE "$<$<COMPILE_LANGUAGE:CXX>:${CMAKE_CURRENT_SOURCE_DIR}/src/pch.h>"
 )

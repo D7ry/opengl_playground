@@ -1,9 +1,6 @@
+
+
 #include "lab.h"
-#include "spdlog/spdlog.h"
-
-#include "glm/glm.hpp"
-#include <glm/gtc/matrix_transform.hpp> // rotate and translate
-
 #include "camera.h"
 #include "delta_time.h"
 #include "input.h"
@@ -168,13 +165,15 @@ void Lab::HelloTriangle::init(GLFWwindow* window) {
             );
         }
     }
+
+    { // imgui setup
+
+    }
 }
 
 void Lab::HelloTriangle::tick() {
     delta_time.tick();
     InputManager::get_singleton()->tick(delta_time.get());
-    glClearColor(0, 0, 0, 0);
-    glClear(GL_COLOR_BUFFER_BIT);
 
     shaders->use();
 
