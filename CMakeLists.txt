@@ -36,6 +36,7 @@ add_executable(${PROJECT_NAME}
     src/shader.cpp
     src/lab.cpp
     src/delta_time.cpp
+    src/engine.cpp
 )
 
 # library sources

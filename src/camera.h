@@ -27,6 +27,14 @@ class Camera
         bool follow_pitch = false // FIXME: fix pitch following for sideways movement
     );
 
+    // imgui debug window
+    void draw_debug_window() {
+        ImGui::Begin("Camera Data");
+        ImGui::Text("position: %f %f %f", position.x, position.y, position.z);
+        ImGui::Text("yaw pitch roll: %f %f %f", yaw, pitch, roll);
+        ImGui::End();
+    }
+
     glm::vec3 get_position() { return position; }
 
     glm::vec3 get_yaw_pitch_roll() { return glm::vec3{yaw, pitch, roll}; }

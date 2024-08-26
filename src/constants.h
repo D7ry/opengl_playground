@@ -8,4 +8,8 @@ const size_t WINDOW_HEIGHT = 720;
 const size_t VIEWPORT_WIDTH = WINDOW_WIDTH;
 const size_t VIEWPORT_HEIGHT = WINDOW_HEIGHT;
 
+const int WINDOW_CAPTURE_CURSOR_TOGGLE_KEY = GLFW_KEY_TAB;
+
 const float FOV = 90.f;
+
+const int CAMERA_SPEED = 3;

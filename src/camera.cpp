@@ -5,8 +5,6 @@
 
 // TODO: implement roll
 
-// up vector of world space, pointing straight up
-
 glm::mat4 Camera::get_view_matrix() { return this->view_matrix; }
 
 void Camera::update_view_matrix() {
