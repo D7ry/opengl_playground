@@ -146,6 +146,16 @@ void Engine::bind_default_inputs() {
             camera->mod_position(0, -delta_time.get() * CAMERA_SPEED, 0);
         }
     );
+    input->register_key_callback(
+        GLFW_KEY_TAB,
+        InputManager::KeyCallbackCondition::PRESS,
+        [this]() { toggle_imgui_control(); }
+    );
+    input->register_key_callback(
+        GLFW_KEY_F1,
+        InputManager::KeyCallbackCondition::PRESS,
+        [this]() {toggle_cursor_capture(); }
+    );
 }
 
 void Engine::render_loop() {
@@ -162,8 +172,8 @@ void Engine::render_loop() {
                 ImGui::NewFrame();
             }
         }
+        this->draw_debug_window();
         this->delta_time.tick();
-        this->camera->draw_debug_window();
         this->input->tick(this->delta_time.get());
         this->demo_tick();
 
@@ -290,13 +300,27 @@ void Engine::demo_tick() {
     );
 }
 
-void Engine::toggle_imgui_control(bool on) {
+void Engine::toggle_imgui_control() {
+    this->imgui_control = !this->imgui_control;
     ImGuiIO& io = ImGui::GetIO();
-    if (on) {
+    if (this->imgui_control) {
+        DEBUG("Enabled imgui input");
         io.ConfigFlags &= !ImGuiConfigFlags_NoMouse;
         io.ConfigFlags &= !ImGuiConfigFlags_NoKeyboard;
     } else {
+        DEBUG("Disabled imgui input");
         io.ConfigFlags |= ImGuiConfigFlags_NoMouse;
         io.ConfigFlags |= ImGuiConfigFlags_NoKeyboard;
+    }
+}
+
+void Engine::toggle_cursor_capture() {
+    this->cursor_capture = !this->cursor_capture;
+    if (this->cursor_capture) {
+        DEBUG("capture cursor");
+        glfwSetInputMode(this->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    } else {
+        DEBUG("release cursor");
+        glfwSetInputMode(this->window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
     }
 }

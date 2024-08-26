@@ -28,11 +28,10 @@ class Camera
     );
 
     // imgui debug window
-    void draw_debug_window() {
-        ImGui::Begin("Camera Data");
+    void debug_info_imgui() {
+        ImGui::Text("Camera");
         ImGui::Text("position: %f %f %f", position.x, position.y, position.z);
         ImGui::Text("yaw pitch roll: %f %f %f", yaw, pitch, roll);
-        ImGui::End();
     }
 
     glm::vec3 get_position() { return position; }
