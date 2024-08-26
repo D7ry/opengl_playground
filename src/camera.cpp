@@ -11,16 +11,20 @@ glm::mat4 Camera::get_view_matrix() { return this->view_matrix; }
 
 void Camera::update_view_matrix() {
     glm::vec3 up = WORLD_UP_VECTOR;
-
     glm::vec3 direction;
-    direction.x = cos(glm::radians(yaw));
-    direction.z = sin(glm::radians(yaw));
-    direction.y = sin(glm::radians(pitch));
-    direction = glm::normalize(direction);
+    float pitch_rad = glm::radians(pitch);
+    float yaw_rad = glm::radians(yaw);
+    
+    direction.x = cos(yaw_rad);
+    direction.z = sin(yaw_rad);
 
-    // lookat handles the adjusting of the actual up vector internally
-    this->view_matrix
-        = glm::lookAt(this->position, this->position + direction, up);
+    // adjust y component to x and z
+    direction.y = tan(pitch_rad) * glm::length(glm::vec2{direction.x, direction.z});
+    
+    direction = glm::normalize(direction);
+    
+    this->view_matrix = glm::lookAt(this->position, this->position + direction, up);
+    return;
 }
 
 void Camera::mod_yaw(float yaw) {

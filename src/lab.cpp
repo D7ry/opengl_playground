@@ -211,7 +211,7 @@ void Lab::HelloTriangle::tick() {
         glm::mat4 view = camera.get_view_matrix();
         // proj matrix
         glm::mat4 proj = glm::perspective(
-            glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f
+            glm::radians(FOV), (float)VIEWPORT_WIDTH / (float)VIEWPORT_HEIGHT, 0.1f, 100.0f
         );
 
         // set transform matrices
