@@ -5,6 +5,7 @@
 #include "input.h"
 #include "shader.h"
 #include "mesh.h"
+#include "app/app.h"
 
 // a self-contained engine. Should be used as a singleton for each thread.
 class Engine
@@ -26,9 +27,6 @@ class Engine
     DeltaTimer delta_time;
     bool imgui_control;
     bool cursor_capture;
-
-    void tick();
-
 
     static void glfw_key_callback(
         GLFWwindow* window,
@@ -63,23 +61,5 @@ class Engine
     void toggle_imgui_control();
     void toggle_cursor_capture();
 
-    // demo
-    struct DemoData
-    {
-        unsigned int vao;
-        SimpleShaderProgram* shaders = nullptr;
-    } demo_data;
-
-    void demo_init();
-    void demo_tick();
-
-
-    struct MatLightingData
-    {
-        std::unique_ptr<PhongModel> model;
-        std::unique_ptr<ShaderProgram> shader;
-    } mat_lighting_data;
-
-    void mat_lighting_init();
-    void mat_lighting_tick();
+    std::vector<std::unique_ptr<App>> apps;
 };

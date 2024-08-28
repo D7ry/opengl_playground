@@ -13,6 +13,7 @@ set(GLM_INCLUDE extern/glm)
 set(GLFW_INCLUDE extern/glfw/include)
 set(SPDLOG_INCLUDE extern/spdlog/include)
 set(IMGUI_INCLUDE extern/imgui)
+set(ASSIMP_INCLUDE extern/assimp/include)
 
 set(IMGUI_SRC 
     extern/imgui/imgui.cpp
@@ -26,6 +27,7 @@ set(IMGUI_SRC
 # submodules
 add_subdirectory(extern/glfw)
 add_subdirectory(extern/spdlog)
+add_subdirectory(extern/assimp)
 
 
 # ---------- Project Files ---------- #
@@ -34,9 +36,11 @@ add_executable(${PROJECT_NAME}
     src/input.cpp
     src/camera.cpp
     src/shader.cpp
-    src/lab.cpp
+    # src/lab.cpp
     src/delta_time.cpp
     src/engine.cpp
+    src/mesh.cpp
+    src/app/app.cpp
 )
 
 # library sources
@@ -50,6 +54,7 @@ target_sources(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME} 
     spdlog::spdlog 
     glfw
+    assimp
 )
 
 # ---------- includes ---------- #
@@ -59,7 +64,9 @@ target_include_directories(${PROJECT_NAME}
     PRIVATE ${GLFW_INCLUDE}
     PRIVATE ${GLM_INCLUDE}
     PRIVATE ${IMGUI_INCLUDE}
+    PRIVATE ${ASSIMP_INCLUDE}
     PRIVATE ${CMAKE_SOURCE_DIR}/include
+    PRIVATE src
 )
 
 target_precompile_headers(${PROJECT_NAME} 
