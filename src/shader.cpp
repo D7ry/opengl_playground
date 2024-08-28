@@ -80,7 +80,7 @@ bool SimpleShaderProgram::build() {
 
 void SimpleShaderProgram::use() { glUseProgram(this->program_id); }
 
-void SimpleShaderProgram::set_uniform_bool(
+void ShaderProgram::set_uniform_bool(
     const std::string& name,
     bool value
 ) {
@@ -89,18 +89,18 @@ void SimpleShaderProgram::set_uniform_bool(
     );
 }
 
-void SimpleShaderProgram::set_uniform_int(const std::string& name, int value) {
+void ShaderProgram::set_uniform_int(const std::string& name, int value) {
     glUniform1i(glGetUniformLocation(this->program_id, name.c_str()), value);
 }
 
-void SimpleShaderProgram::set_uniform_float(
+void ShaderProgram::set_uniform_float(
     const std::string& name,
     float value
 ) {
     glUniform1i(glGetUniformLocation(this->program_id, name.c_str()), value);
 }
 
-void SimpleShaderProgram::set_uniform_mat4(
+void ShaderProgram::set_uniform_mat4(
     const std::string& name,
     const glm::mat4& mat4
 ) {

@@ -12,6 +12,7 @@
 #define DEBUG(...) SPDLOG_DEBUG(__VA_ARGS__)
 #define WARN(...) SPDLOG_WARN(__VA_ARGS__)
 #define ERROR(...) SPDLOG_ERROR(__VA_ARGS__)
+#define CRIT(...) SPDLOG_CRITICAL(__VA_ARGS__); exit(1);
 
 namespace Logging
 {

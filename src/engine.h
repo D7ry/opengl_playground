@@ -4,6 +4,7 @@
 #include "delta_time.h"
 #include "input.h"
 #include "shader.h"
+#include "mesh.h"
 
 // a self-contained engine. Should be used as a singleton for each thread.
 class Engine
@@ -26,6 +27,8 @@ class Engine
     bool imgui_control;
     bool cursor_capture;
 
+    void tick();
+
 
     static void glfw_key_callback(
         GLFWwindow* window,
@@ -47,7 +50,10 @@ class Engine
 
     void draw_debug_window() {
         ImGui::Begin("Debug");
-        ImGui::Text("FPS: %f", (1.f / delta_time.get()));
+        {
+            ImGui::Text("Performance");
+            ImGui::Text("FPS: %f", (1.f / delta_time.get()));
+        }
         ImGui::Separator();
         this->camera->debug_info_imgui();
         ImGui::End();
@@ -66,4 +72,14 @@ class Engine
 
     void demo_init();
     void demo_tick();
+
+
+    struct MatLightingData
+    {
+        std::unique_ptr<PhongModel> model;
+        std::unique_ptr<ShaderProgram> shader;
+    } mat_lighting_data;
+
+    void mat_lighting_init();
+    void mat_lighting_tick();
 };

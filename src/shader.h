@@ -1,6 +1,6 @@
 #pragma once
-#include <string>
 #include "glm/glm.hpp"
+#include <string>
 
 class Shader
 {
@@ -29,8 +29,27 @@ class Shader
     unsigned int shader_kind;
 };
 
+class ShaderProgram
+{
+  public:
+    virtual void use() { ERROR("Default use() not defined"); }
+
+    void set_uniform_bool(const std::string& name, bool value);
+    void set_uniform_int(const std::string& name, int value);
+    void set_uniform_float(const std::string& name, float value);
+    void set_uniform_mat4(const std::string& name, const glm::mat4& mat4);
+
+    virtual bool build() {
+        ERROR("Default build() not defined");
+        return false;
+    }
+
+  protected:
+    unsigned int program_id = 0;
+};
+
 // very simple shader program consisting only vertex and fragment shader
-class SimpleShaderProgram
+class SimpleShaderProgram : public ShaderProgram
 {
   public:
     SimpleShaderProgram() = delete;
@@ -48,18 +67,12 @@ class SimpleShaderProgram
         }
     }
 
-    bool build();
+    virtual bool build() override;
 
     // use the shaders. call this in render loop
-    void use();
-
-    void set_uniform_bool(const std::string& name, bool value);
-    void set_uniform_int(const std::string& name, int value);
-    void set_uniform_float(const std::string& name, float value);
-    void set_uniform_mat4(const std::string& name, const glm::mat4& mat4);
+    virtual void use() override;
 
   private:
-    unsigned int program_id = 0;
     std::string vertex_shader_file;
     std::string fragment_shader_file;
 };

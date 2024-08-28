@@ -1,4 +1,5 @@
 #include "engine.h"
+#include "mesh.h"
 
 void Engine::glfw_cursor_pos_callback(
     GLFWwindow* window,
@@ -90,7 +91,10 @@ Engine::Engine(const std::string& window_name) {
     );
     this->bind_default_inputs();
 
+    glEnable(GL_DEPTH_TEST);
+
     this->demo_init();
+    this->mat_lighting_init();
 };
 
 Engine* Engine::get_singleton() {
@@ -154,8 +158,16 @@ void Engine::bind_default_inputs() {
     input->register_key_callback(
         GLFW_KEY_F1,
         InputManager::KeyCallbackCondition::PRESS,
-        [this]() {toggle_cursor_capture(); }
+        [this]() { toggle_cursor_capture(); }
     );
+}
+
+void Engine::tick() {
+    this->delta_time.tick();
+    this->draw_debug_window();
+    this->input->tick(this->delta_time.get());
+    this->demo_tick();
+    this->mat_lighting_tick();
 }
 
 void Engine::render_loop() {
@@ -163,7 +175,7 @@ void Engine::render_loop() {
     while (!glfwWindowShouldClose(window)) {
         { // render loop prologue
             glClearColor(0, 0, 0, 0);
-            glClear(GL_COLOR_BUFFER_BIT);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
             glfwPollEvents();
             { // imgui prologue
@@ -172,13 +184,8 @@ void Engine::render_loop() {
                 ImGui::NewFrame();
             }
         }
-        this->draw_debug_window();
-        this->delta_time.tick();
-        this->input->tick(this->delta_time.get());
-        this->demo_tick();
-
+        tick();
         { // render loop epilogue
-
             { // imgui epilogue
                 ImGui::Render();
                 ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -265,6 +272,7 @@ void Engine::demo_init() {
     }
 }
 
+// simple 3d scene of 2 triangles
 void Engine::demo_tick() {
     this->demo_data.shaders->use();
 
@@ -323,4 +331,30 @@ void Engine::toggle_cursor_capture() {
         DEBUG("release cursor");
         glfwSetInputMode(this->window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
     }
+}
+
+void Engine::mat_lighting_init() {
+
+    this->mat_lighting_data.shader = std::make_unique<SimpleShaderProgram>(
+        "../shaders/phong_mesh.vert", "../shaders/phong_mesh.frag"
+    );
+    this->mat_lighting_data.shader->build();
+
+    mat_lighting_data.model = std::make_unique<PhongModel>("../assets/backpack.obj");
+}
+
+void Engine::mat_lighting_tick() {
+
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::rotate(model, glm::radians(0.f), glm::vec3(1.0f, 0.0f, 0.0f));
+    // view matrix
+    glm::mat4 view = camera->get_view_matrix();
+    // proj matrix
+    glm::mat4 proj = glm::perspective(
+        glm::radians(FOV),
+        (float)VIEWPORT_WIDTH / (float)VIEWPORT_HEIGHT,
+        0.1f,
+        100.0f
+    );
+    mat_lighting_data.model->draw(model, view, proj, *mat_lighting_data.shader);
 }

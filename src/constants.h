@@ -13,3 +13,10 @@ const int WINDOW_CAPTURE_CURSOR_TOGGLE_KEY = GLFW_KEY_TAB;
 const float FOV = 90.f;
 
 const int CAMERA_SPEED = 3;
+
+// model matrix uniform symbol
+inline const char* U_MODEL = "u_model";
+// view matrix uniform symbol
+inline const char* U_VIEW = "u_view";
+// projection matrix uniform symbol
+inline const char* U_PROJ = "u_proj";
