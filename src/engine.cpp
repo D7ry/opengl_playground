@@ -28,6 +28,16 @@ void Engine::glfw_cursor_pos_callback(
     Engine::get_singleton()->camera->mod_pitch(-offset_y);
 }
 
+
+void Engine::glfw_fb_resize_callback(
+    GLFWwindow* window, 
+    int width, 
+    int height
+) {
+    DEBUG("window resized to : {} {}", width, height);
+    glViewport(0, 0, width, height);
+}
+
 void Engine::glfw_key_callback(
     GLFWwindow* window,
     int key,
@@ -48,12 +58,12 @@ Engine::Engine(const std::string& window_name) {
         WINDOW_WIDTH, WINDOW_HEIGHT, window_name.c_str(), NULL, NULL
     );
     if (!this->window) {
-        ERROR("Failed to create glfw window");
+        CRIT("Failed to create glfw window");
     }
     glfwMakeContextCurrent(this->window);
 
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-        ERROR("Failed to initialize GLAD");
+        CRIT("Failed to initialize GLAD");
     }
     glViewport(
         0,            // x
@@ -61,13 +71,7 @@ Engine::Engine(const std::string& window_name) {
         WINDOW_WIDTH, // width
         WINDOW_HEIGHT // height
     );
-    glfwSetFramebufferSizeCallback(
-        this->window,
-        [](GLFWwindow* window, int width, int height) {
-            glViewport(0, 0, width, height);
-        }
-    );
-
+    glfwSetFramebufferSizeCallback(this->window, Engine::glfw_fb_resize_callback);
     glfwSetKeyCallback(this->window, Engine::glfw_key_callback);
     glfwSetCursorPosCallback(this->window, Engine::glfw_cursor_pos_callback);
 

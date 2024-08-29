@@ -42,6 +42,11 @@ class Engine
         double ypos
     );
 
+    static void glfw_fb_resize_callback(
+        GLFWwindow* window, 
+        int width, 
+        int height);
+
     Engine(const std::string& window_name);
 
     void bind_default_inputs();
