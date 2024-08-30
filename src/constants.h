@@ -10,7 +10,7 @@ const size_t VIEWPORT_HEIGHT = WINDOW_HEIGHT;
 
 const int WINDOW_CAPTURE_CURSOR_TOGGLE_KEY = GLFW_KEY_TAB;
 
-const float FOV = 90.f;
+const float FOV = 75.f;
 
 const int CAMERA_SPEED = 3;
 
