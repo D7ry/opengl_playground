@@ -118,11 +118,10 @@ void MeshLoadingApp::init(InitData& init_data) {
         "../shaders/phong_mesh.vert", "../shaders/phong_mesh.frag"
     );
     this->shader->build();
-    this->model = std::make_unique<PhongModel>("../assets/backpack.obj");
+    this->model = std::make_unique<PhongModel>("../assets/backpack.obj", init_data.texture_manager);
 }
 
 void MeshLoadingApp::tick(TickData& tick_data) {
-
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::rotate(model, glm::radians(0.f), glm::vec3(1.0f, 0.0f, 0.0f));
     // view matrix
@@ -161,8 +160,8 @@ void ImGuiApp::tickpost() {
 }
 
 void ImGuiApp::tick(TickData& tick_data) {
-    ImGui::Begin("Hello Imgui");
-    ImGui::End();
+    // ImGui::Begin("Hello Imgui");
+    // ImGui::End();
 }
 
 

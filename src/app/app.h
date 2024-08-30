@@ -1,6 +1,7 @@
 #pragma once
 
 class Camera;
+class TextureManager;
 
 // app loaded by the engine
 // each app contains
@@ -13,11 +14,13 @@ class App
     struct InitData
     {
         GLFWwindow* window;
+        TextureManager* texture_manager;
     };
 
     struct TickData
     {
         Camera* camera;
+        TextureManager* texture_manager;
         double dt;
     };
 

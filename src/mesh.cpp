@@ -36,9 +36,13 @@ bool PhongMesh::init_gl(
         glEnableVertexAttribArray(1); // normal
         glEnableVertexAttribArray(2); // texture coordinates
 
+
+        // layout (location = 0) in vec3 a_pos;
         glVertexAttribPointer(
             0, 3, GL_FLOAT, false, sizeof(Vertex), reinterpret_cast<void*>(0)
         );
+
+        // layout (location = 1) in vec3 a_normal;
         glVertexAttribPointer(
             1,              // index
             3,              // size
@@ -47,6 +51,8 @@ bool PhongMesh::init_gl(
             sizeof(Vertex), // stride
             reinterpret_cast<void*>(offsetof(Vertex, normal))
         );
+
+        // layout (location = 2) in vec2 a_tex_coords;
         glVertexAttribPointer(
             2,
             2,
@@ -73,6 +79,15 @@ bool PhongMesh::init_gl(
     return true;
 }
 
+void PhongMesh::cleanup_gl() {
+    if (VAO)
+        glDeleteVertexArrays(1, &VAO);
+    if (VBO)
+        glDeleteBuffers(1, &VBO);
+    if (EBO)
+        glDeleteBuffers(1, &EBO);
+}
+
 void PhongModel::draw(
     const glm::mat4& model,
     const glm::mat4& view,
@@ -80,14 +95,30 @@ void PhongModel::draw(
     ShaderProgram& shader
 ) {
     shader.use();
+    // set model view proj matrix, shared among all meshes of this model
     shader.set_uniform_mat4(U_MODEL, model);
     shader.set_uniform_mat4(U_VIEW, view);
     shader.set_uniform_mat4(U_PROJ, proj);
 
-    // glActiveTexture(GL_TEXTURE0);
     for (PhongMesh& mesh : this->meshes) {
-        // TODO: add texture processing
-        // glBindTexture(GL_TEXTURE_2D, this->texture.id);
+        // set up textures
+        // 0 - diffuse
+        // 1 - specular
+        // 2 - ambient
+        // 3 - height
+        // FIXME: i don't like this
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, mesh.tex_diffuse.id);
+
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, mesh.tex_specular.id);
+
+        glActiveTexture(GL_TEXTURE2);
+        glBindTexture(GL_TEXTURE_2D, mesh.tex_ambient.id);
+
+        glActiveTexture(GL_TEXTURE3);
+        glBindTexture(GL_TEXTURE_2D, mesh.tex_height.id);
+
         glBindVertexArray(mesh.VAO);
         glDrawElements(GL_TRIANGLES, mesh.num_indices, GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
@@ -98,7 +129,11 @@ void PhongModel::draw(
 }
 
 // model loading functions
-PhongMesh PhongModel::process_mesh(aiMesh* mesh, const aiScene* scene) {
+PhongMesh PhongModel::process_mesh(
+    aiMesh* mesh,
+    const aiScene* scene, // parent scene owning the mesh
+    TextureManager* texture_manager
+) {
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
     PhongMesh ret;
@@ -138,6 +173,43 @@ PhongMesh PhongModel::process_mesh(aiMesh* mesh, const aiScene* scene) {
         }
     }
 
+    // populate model's textures
+    aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
+    for (aiTextureType texture_type :
+         {aiTextureType::aiTextureType_DIFFUSE,
+          aiTextureType::aiTextureType_SPECULAR,
+          aiTextureType::aiTextureType_HEIGHT,
+          aiTextureType::aiTextureType_AMBIENT}) {
+        aiString texture_name_;
+        material->GetTexture(texture_type, 0, &texture_name_);
+        std::string texture_name = std::string(texture_name_.C_Str());
+
+        if (texture_name.empty()) {
+            continue;
+        }
+
+        // figure out the abs pathing
+        std::string texture_path = (this->model_path.substr(0, this->model_path.find_last_of('/') + 1) + texture_name).c_str();
+        TextureHandle texture_handle
+            = texture_manager->get_texture(texture_path.c_str());
+        switch (texture_type) {
+        case aiTextureType::aiTextureType_DIFFUSE:
+            ret.tex_diffuse = texture_handle;
+            break;
+        case aiTextureType::aiTextureType_SPECULAR:
+            ret.tex_specular = texture_handle;
+            break;
+        case aiTextureType::aiTextureType_HEIGHT:
+            ret.tex_height = texture_handle;
+            break;
+        case aiTextureType::aiTextureType_AMBIENT:
+            ret.tex_ambient = texture_handle;
+            break;
+        default:
+            CRIT("unreacheable statement");
+        }
+    }
+
     bool success = ret.init_gl(vertices, indices);
     if (!success) {
         ERROR("Failed to initialize openGL resource");
@@ -146,20 +218,28 @@ PhongMesh PhongModel::process_mesh(aiMesh* mesh, const aiScene* scene) {
     return ret;
 };
 
-void PhongModel::process_node(aiNode* node, const aiScene* scene) {
+void PhongModel::process_node(
+    aiNode* node,
+    const aiScene* scene,
+    TextureManager* texture_manager
+) {
     // process all the node's meshes (if any)
     for (unsigned int i = 0; i < node->mNumMeshes; i++) {
         aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-        this->meshes.emplace_back(process_mesh(mesh, scene));
+        this->meshes.emplace_back(process_mesh(mesh, scene, texture_manager));
     }
     // then do the same for each of its children
     for (unsigned int i = 0; i < node->mNumChildren; i++) {
-        process_node(node->mChildren[i], scene);
+        process_node(node->mChildren[i], scene, texture_manager);
     }
 }
 
-PhongModel::PhongModel(const std::string& model_path) {
+PhongModel::PhongModel(
+    const std::string& model_path,
+    TextureManager* texture_manager
+) {
     DEBUG("Loading mesh from {}", model_path);
+    this->model_path = model_path;
     Assimp::Importer importer;
     const aiScene* scene = importer.ReadFile(
         model_path, aiProcess_Triangulate | aiProcess_FlipUVs
@@ -170,7 +250,7 @@ PhongModel::PhongModel(const std::string& model_path) {
         CRIT("Error loading mesh");
     }
     // recursive node process
-    process_node(scene->mRootNode, scene);
+    process_node(scene->mRootNode, scene, texture_manager);
 }
 
 PhongModel::~PhongModel() {

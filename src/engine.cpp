@@ -91,7 +91,7 @@ Engine::Engine(const std::string& window_name) {
 
     glEnable(GL_DEPTH_TEST);
 
-    App::InitData init_data{window};
+    App::InitData init_data{window, std::addressof(this->texture_manager)};
     for (std::unique_ptr<App>& app : this->apps) {
         app->init(init_data);
     }

@@ -40,6 +40,7 @@ add_executable(${PROJECT_NAME}
     src/delta_time.cpp
     src/engine.cpp
     src/mesh.cpp
+    src/texture.cpp
     src/app/app.cpp
 )
 

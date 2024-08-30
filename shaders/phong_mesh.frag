@@ -1,8 +1,14 @@
 #version 330 core
-in vec4 v_color;
+in vec2 v_tex_coords;
+
 out vec4 o_color;
+
+uniform sampler2D t_diffuse;
+uniform sampler2D t_specular;
 
 void main()
 {
-    o_color = v_color; // simply propagates color
+   vec3 diffuse = texture(t_diffuse, v_tex_coords).rgb;
+
+   o_color = vec4(diffuse, 1.0);
 } 

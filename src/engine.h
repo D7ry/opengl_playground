@@ -5,6 +5,7 @@
 #include "input.h"
 #include "shader.h"
 #include "mesh.h"
+#include "texture.h"
 #include "app/app.h"
 
 // a self-contained engine. Should be used as a singleton for each thread.
@@ -67,4 +68,6 @@ class Engine
     void toggle_cursor_capture();
 
     std::vector<std::unique_ptr<App>> apps;
+
+    TextureManager texture_manager;
 };

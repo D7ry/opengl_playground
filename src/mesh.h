@@ -1,6 +1,8 @@
 #pragma once
 
 #include "assimp/scene.h"
+#include "texture.h"
+
 class ShaderProgram;
 
 class Material
@@ -14,18 +16,12 @@ struct Vertex
     glm::vec2 tex_coords; // texture coordinates
 };
 
-struct TextureHandle
-{
-    unsigned int id;
-};
-
 // Phong Mesh that lives in GPU memory
 struct PhongMesh
 {
     unsigned int VAO, VBO, EBO;
-    TextureHandle texture;
     size_t num_indices;
-    
+
     // initialize openGL resources from `vertices` and `indices`
     // returns whether initialization is successful
     bool init_gl(
@@ -33,12 +29,15 @@ struct PhongMesh
         const std::vector<unsigned int>& indices
     );
 
-    void cleanup_gl() {
-        if (VAO) glDeleteVertexArrays(1, &VAO);
-        if (VBO) glDeleteBuffers(1, &VBO);
-        if (EBO) glDeleteBuffers(1, &EBO);
-    }
+    void cleanup_gl();
 
+    // note here we only load one texture for each type
+    // realistically one model can have multiple maps but i dont care
+
+    TextureHandle tex_diffuse;  // diffuse map
+    TextureHandle tex_specular; // specular map
+    TextureHandle tex_ambient;  // ambient map
+    TextureHandle tex_height;   // height map
 };
 
 class PhongModel
@@ -47,7 +46,7 @@ class PhongModel
     PhongModel() = delete;
     // initialize a phong model, loads up the model and populate all the meshes,
     // copying mesh vertex&index buffers onto device.
-    PhongModel(const std::string& model_path);
+    PhongModel(const std::string& model_path, TextureManager* texture_manager);
     ~PhongModel();
 
     void draw(
@@ -58,7 +57,8 @@ class PhongModel
     );
 
   private:
-    PhongMesh process_mesh(aiMesh* mesh, const aiScene* scene);
-    void process_node(aiNode* node, const aiScene* scene);
+    PhongMesh process_mesh(aiMesh* mesh, const aiScene* scene, TextureManager* texture_manager);
+    void process_node(aiNode* node, const aiScene* scene, TextureManager* texture_manager);
     std::vector<PhongMesh> meshes;
+    std::string model_path; // path to the model
 };
