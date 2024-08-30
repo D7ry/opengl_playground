@@ -22,6 +22,7 @@ class App
         Camera* camera;
         TextureManager* texture_manager;
         double dt;
+        glm::mat4 proj;
     };
 
     virtual void init(InitData& init_data) {
@@ -35,6 +36,8 @@ class App
     }
 
     virtual void tickpost(){};
+
+    virtual ~App() = default;
 };
 
 // app to set up resources, prologue and epilogues for imgui drawing.

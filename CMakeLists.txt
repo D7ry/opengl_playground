@@ -42,6 +42,7 @@ add_executable(${PROJECT_NAME}
     src/mesh.cpp
     src/texture.cpp
     src/app/app.cpp
+    src/app/apps/coordinate_system.cpp
 )
 
 # library sources

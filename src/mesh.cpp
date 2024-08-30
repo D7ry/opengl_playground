@@ -125,7 +125,6 @@ void PhongModel::draw(
     }
 
     glBindVertexArray(0); // unbind VAO
-    // glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 // model loading functions
@@ -156,7 +155,7 @@ PhongMesh PhongModel::process_mesh(
             std::addressof(mesh->mNormals[i].x),
             sizeof(float) * 3
         );
-        if (mesh->mTextureCoords[0]) {
+        if (mesh->mTextureCoords[0]) { // only take 0th texture coordinate
             memcpy(
                 p_vertex + offsetof(Vertex, tex_coords),
                 &(mesh->mTextureCoords[0][i].x),

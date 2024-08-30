@@ -1,3 +1,4 @@
+#include "app/apps/coordinate_system.h"
 #include "engine.h"
 #include "mesh.h"
 
@@ -28,10 +29,9 @@ void Engine::glfw_cursor_pos_callback(
     Engine::get_singleton()->camera->mod_pitch(-offset_y);
 }
 
-
 void Engine::glfw_fb_resize_callback(
-    GLFWwindow* window, 
-    int width, 
+    GLFWwindow* window,
+    int width,
     int height
 ) {
     DEBUG("window resized to : {} {}", width, height);
@@ -53,6 +53,7 @@ void Engine::glfw_key_callback(
 Engine::Engine(const std::string& window_name) {
     this->apps.push_back(std::make_unique<ImGuiApp>());
     this->apps.push_back(std::make_unique<MeshLoadingApp>());
+    this->apps.push_back(std::make_unique<CoordinateSystemApp>());
 
     this->window = glfwCreateWindow(
         WINDOW_WIDTH, WINDOW_HEIGHT, window_name.c_str(), NULL, NULL
@@ -71,10 +72,11 @@ Engine::Engine(const std::string& window_name) {
         WINDOW_WIDTH, // width
         WINDOW_HEIGHT // height
     );
-    glfwSetFramebufferSizeCallback(this->window, Engine::glfw_fb_resize_callback);
+    glfwSetFramebufferSizeCallback(
+        this->window, Engine::glfw_fb_resize_callback
+    );
     glfwSetKeyCallback(this->window, Engine::glfw_key_callback);
     glfwSetCursorPosCallback(this->window, Engine::glfw_cursor_pos_callback);
-
 
     this->input = std::make_unique<InputManager>();
     this->camera = std::make_unique<Camera>(
@@ -179,7 +181,19 @@ void Engine::render_loop() {
             this->delta_time.tick();
             this->draw_debug_window();
             this->input->tick(this->delta_time.get());
-            App::TickData tick_data{this->camera.get()};
+            // main engine projection matrix
+            glm::mat4 proj = glm::perspective(
+                glm::radians(FOV),
+                (float)VIEWPORT_WIDTH / (float)VIEWPORT_HEIGHT,
+                0.1f,
+                100.0f
+            );
+            App::TickData tick_data{
+                this->camera.get(),
+                std::addressof(this->texture_manager),
+                this->delta_time.get(),
+                proj
+            };
             for (auto& app : this->apps) {
                 app->tick(tick_data);
             }

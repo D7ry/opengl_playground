@@ -9,6 +9,8 @@ TextureHandle TextureManager::get_texture(const char* texture_path) {
         return it->second;
     }
 
+    DEBUG("Loading texture from {}", key);
+
     TextureHandle texture_handle;
 
     int width, height, number_components;
@@ -56,6 +58,8 @@ TextureHandle TextureManager::get_texture(const char* texture_path) {
         GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR
     );
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    glBindTexture(GL_TEXTURE_2D, 0);
 
     this->textures.insert({std::string(texture_path), texture_handle});
 
