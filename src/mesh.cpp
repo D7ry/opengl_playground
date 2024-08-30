@@ -172,3 +172,9 @@ PhongModel::PhongModel(const std::string& model_path) {
     // recursive node process
     process_node(scene->mRootNode, scene);
 }
+
+PhongModel::~PhongModel() {
+    for (auto& mesh : this->meshes) {
+        mesh.cleanup_gl();
+    }
+}

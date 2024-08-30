@@ -32,13 +32,23 @@ struct PhongMesh
         const std::vector<Vertex>& vertices,
         const std::vector<unsigned int>& indices
     );
+
+    void cleanup_gl() {
+        if (VAO) glDeleteVertexArrays(1, &VAO);
+        if (VBO) glDeleteBuffers(1, &VBO);
+        if (EBO) glDeleteBuffers(1, &EBO);
+    }
+
 };
 
 class PhongModel
 {
   public:
     PhongModel() = delete;
+    // initialize a phong model, loads up the model and populate all the meshes,
+    // copying mesh vertex&index buffers onto device.
     PhongModel(const std::string& model_path);
+    ~PhongModel();
 
     void draw(
         const glm::mat4& model,
