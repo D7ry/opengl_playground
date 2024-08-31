@@ -1,5 +1,6 @@
 #include "stb_image.h"
 
+#include "stb_image.h"
 #include "texture.h"
 
 TextureHandle TextureManager::get_texture(const char* texture_path) {
@@ -35,7 +36,9 @@ TextureHandle TextureManager::get_texture(const char* texture_path) {
         format = GL_RGBA;
         break;
     default:
-        ERROR("Invalid texture format. number_components == {}", number_components);
+        ERROR(
+            "Invalid texture format. number_components == {}", number_components
+        );
     }
 
     glGenTextures(1, &texture_handle.id);
@@ -67,6 +70,8 @@ TextureHandle TextureManager::get_texture(const char* texture_path) {
 
     return texture_handle;
 }
+
+TextureManager::TextureManager() { stbi_set_flip_vertically_on_load(true); }
 
 TextureManager::~TextureManager() {
     for (auto it : this->textures) {

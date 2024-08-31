@@ -8,6 +8,8 @@ struct TextureHandle
 class TextureManager
 {
   public:
+    TextureManager();
+
     // get a texture handle. caller can assume O(1) runtime for repeated gets.
     TextureHandle get_texture(const char* texture_path);
 
