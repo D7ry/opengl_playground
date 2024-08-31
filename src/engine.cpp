@@ -146,6 +146,7 @@ void Engine::render_loop() {
             TickData tick_data{
                 this->camera.get(),
                 std::addressof(this->texture_manager),
+                this->input.get(),
                 this->delta_time.get(),
                 proj
             };

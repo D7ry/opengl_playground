@@ -41,8 +41,6 @@ add_executable(${PROJECT_NAME}
     src/engine.cpp
     src/mesh.cpp
     src/texture.cpp
-    src/scene.cpp
-    src/object.cpp
     src/app/app.cpp
     src/app/apps/coordinate_system.cpp
     src/app/apps/imgui_resource.cpp
