@@ -136,32 +136,3 @@ void MeshLoadingApp::tick(TickData& tick_data) {
     this->model->draw(model, view, proj, *this->shader);
 }
 
-void ImGuiApp::init(InitData& init_data) {
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    // by default, disable mouse & keyboard inputs
-    ImGuiIO& io = ImGui::GetIO();
-    io.ConfigFlags |= ImGuiConfigFlags_NoMouse;
-    io.ConfigFlags |= ImGuiConfigFlags_NoKeyboard;
-    // disable input capture
-    ImGui_ImplGlfw_InitForOpenGL(init_data.window, true);
-    ImGui_ImplOpenGL3_Init();
-}
-
-void ImGuiApp::tickpre() {
-    ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplGlfw_NewFrame();
-    ImGui::NewFrame();
-}
-
-void ImGuiApp::tickpost() {
-    ImGui::Render();
-    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-}
-
-void ImGuiApp::tick(TickData& tick_data) {
-    // ImGui::Begin("Hello Imgui");
-    // ImGui::End();
-}
-
-

@@ -68,6 +68,9 @@ class Engine
         }
         ImGui::Separator();
         this->camera->debug_info_imgui();
+        for (auto& app : this->apps) {
+            app->draw_debug_info();
+        }
         ImGui::End();
     }
 

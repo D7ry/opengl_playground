@@ -21,7 +21,7 @@ class App
     {
         Camera* camera;
         TextureManager* texture_manager;
-        double dt; // delta time
+        double dt;      // delta time
         glm::mat4 proj; // projection matrix of main viewport
     };
 
@@ -37,20 +37,11 @@ class App
 
     virtual void tickpost(){};
 
+    // draw imgui debug info. Assuming a parent window (ImGui::Begin() has been
+    // invoked prior)
+    virtual void draw_debug_info(){};
+
     virtual ~App() = default;
-};
-
-// app to set up resources, prologue and epilogues for imgui drawing.
-class ImGuiApp : public App
-{
-
-    virtual void init(InitData& init_data) override;
-
-    virtual void tickpre() override;
-
-    virtual void tick(TickData& tick_data) override;
-
-    virtual void tickpost() override;
 };
 
 class ShaderProgram;
@@ -62,6 +53,11 @@ class SimpleTriangleApp : public App
     virtual void init(InitData& init_data) override;
 
     virtual void tick(TickData& tick_data) override;
+
+    virtual void draw_debug_info() override {
+        ImGui::Separator();
+        ImGui::Text("Hello from simple triangle app");
+    }
 
   private:
     unsigned int vao;

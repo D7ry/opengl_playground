@@ -43,6 +43,7 @@ add_executable(${PROJECT_NAME}
     src/texture.cpp
     src/app/app.cpp
     src/app/apps/coordinate_system.cpp
+    src/app/apps/imgui_resource.cpp
 )
 
 # library sources

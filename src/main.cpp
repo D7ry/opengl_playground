@@ -2,6 +2,7 @@
 
 #include "app/app.h"
 #include "app/apps/coordinate_system.h"
+#include "app/apps/imgui_resource.h"
 
 int main() {
     Logging::init();
@@ -12,9 +13,10 @@ int main() {
     Engine* engine = Engine::get_singleton();
     
     // add apps
-    engine->register_app(std::make_unique<ImGuiApp>());
-    engine->register_app(std::make_unique<MeshLoadingApp>());
-    engine->register_app(std::make_unique<CoordinateSystemApp>());
+    engine->register_app(std::make_unique<ImguiResourceManagerApp>()); // imgui resource manager
+    engine->register_app(std::make_unique<SimpleTriangleApp>()); // 
+    engine->register_app(std::make_unique<MeshLoadingApp>()); // 
+    engine->register_app(std::make_unique<CoordinateSystemApp>()); // show x-y-z coordinate systems
 
     // initialize engine
     engine->init();
