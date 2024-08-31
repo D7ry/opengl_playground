@@ -21,8 +21,8 @@ class App
     {
         Camera* camera;
         TextureManager* texture_manager;
-        double dt;
-        glm::mat4 proj;
+        double dt; // delta time
+        glm::mat4 proj; // projection matrix of main viewport
     };
 
     virtual void init(InitData& init_data) {

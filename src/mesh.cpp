@@ -122,6 +122,20 @@ void PhongModel::draw(
         glBindVertexArray(mesh.VAO);
         glDrawElements(GL_TRIANGLES, mesh.num_indices, GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
+
+        // unbind all textures TODO: I don't like this ugh
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, 0);
+
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, 0);
+
+        glActiveTexture(GL_TEXTURE2);
+        glBindTexture(GL_TEXTURE_2D, 0);
+
+        glActiveTexture(GL_TEXTURE3);
+        glBindTexture(GL_TEXTURE_2D, 0);
+
     }
 
     glBindVertexArray(0); // unbind VAO
@@ -193,15 +207,19 @@ PhongMesh PhongModel::process_mesh(
             = texture_manager->get_texture(texture_path.c_str());
         switch (texture_type) {
         case aiTextureType::aiTextureType_DIFFUSE:
+            //DEBUG("Loaded defuse texture");
             ret.tex_diffuse = texture_handle;
             break;
         case aiTextureType::aiTextureType_SPECULAR:
+            //DEBUG("Loaded specular texture");
             ret.tex_specular = texture_handle;
             break;
         case aiTextureType::aiTextureType_HEIGHT:
+            //DEBUG("Loaded height texture");
             ret.tex_height = texture_handle;
             break;
         case aiTextureType::aiTextureType_AMBIENT:
+            //DEBUG("Loaded ambient texture");
             ret.tex_ambient = texture_handle;
             break;
         default:
