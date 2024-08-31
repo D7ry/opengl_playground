@@ -52,16 +52,3 @@ class SimpleTriangleApp : public App
     SimpleShaderProgram* shaders = nullptr;
 };
 
-class PhongModel;
-
-class MeshLoadingApp : public App
-{
-  public:
-    virtual void init(InitData& init_data) override;
-
-    virtual void tick(TickData& tick_data) override;
-
-  private:
-    std::unique_ptr<PhongModel> model;
-    std::unique_ptr<ShaderProgram> shader;
-};

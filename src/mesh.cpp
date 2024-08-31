@@ -93,6 +93,7 @@ void PhongModel::draw(
     const glm::mat4& model,
     const glm::mat4& view,
     const glm::mat4& proj,
+    const glm::vec3& cam_pos,
     ShaderProgram& shader
 ) {
     shader.use();
@@ -100,6 +101,17 @@ void PhongModel::draw(
     shader.set_uniform_mat4(U_MODEL, model);
     shader.set_uniform_mat4(U_VIEW, view);
     shader.set_uniform_mat4(U_PROJ, proj);
+
+    shader.set_uniform_vec3("u_cam_pos", cam_pos);
+
+    // set position color intensity of the only light source
+    shader.set_uniform_vec3("u_light_position",  {4, 1, 1});
+    shader.set_uniform_vec3("u_light_color",  {1, 1, 1});
+    shader.set_uniform_float("u_light_intensity", 5);
+
+    shader.set_uniform_int("t_diffuse", 0);
+    shader.set_uniform_int("t_specular", 1);
+    shader.set_uniform_int("t_ambient", 2);
 
     for (PhongMesh& mesh : this->meshes) {
         // set up textures
@@ -208,19 +220,19 @@ PhongMesh PhongModel::process_mesh(
             = texture_manager->get_texture(texture_path.c_str());
         switch (texture_type) {
         case aiTextureType::aiTextureType_DIFFUSE:
-            //DEBUG("Loaded defuse texture");
+            // DEBUG("Loaded diffuse texture: {}", texture_name);
             ret.tex_diffuse = texture_handle;
             break;
         case aiTextureType::aiTextureType_SPECULAR:
-            //DEBUG("Loaded specular texture");
+            // DEBUG("Loaded specular texture: {}", texture_name);
             ret.tex_specular = texture_handle;
             break;
         case aiTextureType::aiTextureType_HEIGHT:
-            //DEBUG("Loaded height texture");
+            // EBUG("Loaded height texture: {}", texture_name);
             ret.tex_height = texture_handle;
             break;
         case aiTextureType::aiTextureType_AMBIENT:
-            //DEBUG("Loaded ambient texture");
+            // DEBUG("Loaded ambient texture: {}", texture_name);
             ret.tex_ambient = texture_handle;
             break;
         default:

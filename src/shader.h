@@ -38,6 +38,7 @@ class ShaderProgram
     void set_uniform_int(const std::string& name, int value);
     void set_uniform_float(const std::string& name, float value);
     void set_uniform_mat4(const std::string& name, const glm::mat4& mat4);
+    void set_uniform_vec3(const std::string& name, const glm::vec3& vec3);
 
     virtual bool build() {
         ERROR("Default build() not defined");

@@ -3,6 +3,7 @@
 #include "app/app.h"
 #include "app/apps/coordinate_system.h"
 #include "app/apps/imgui_resource.h"
+#include "app/apps/phong_shading.h"
 
 int main() {
     Logging::init();
@@ -13,10 +14,13 @@ int main() {
     Engine* engine = Engine::get_singleton();
     
     // add apps
+    // required app, don't touch
     engine->register_app(std::make_unique<ImguiResourceManagerApp>()); // imgui resource manager
-    engine->register_app(std::make_unique<SimpleTriangleApp>()); // just 2 triangles
-    engine->register_app(std::make_unique<MeshLoadingApp>()); // test mesh loading
+
+    // user-space app
+    //engine->register_app(std::make_unique<SimpleTriangleApp>()); // just 2 triangles
     engine->register_app(std::make_unique<CoordinateSystemApp>()); // show x-y-z coordinate systems
+    engine->register_app(std::make_unique<PhongShadingApp>()); // phong shading
 
     // initialize engine
     engine->init();

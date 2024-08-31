@@ -53,6 +53,7 @@ class PhongModel
         const glm::mat4& model,
         const glm::mat4& view,
         const glm::mat4& proj,
+        const glm::vec3& cam_pos,
         ShaderProgram& shader
     );
 
