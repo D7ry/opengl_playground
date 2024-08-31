@@ -14,8 +14,8 @@ int main() {
     
     // add apps
     engine->register_app(std::make_unique<ImguiResourceManagerApp>()); // imgui resource manager
-    engine->register_app(std::make_unique<SimpleTriangleApp>()); // 
-    engine->register_app(std::make_unique<MeshLoadingApp>()); // 
+    engine->register_app(std::make_unique<SimpleTriangleApp>()); // just 2 triangles
+    engine->register_app(std::make_unique<MeshLoadingApp>()); // test mesh loading
     engine->register_app(std::make_unique<CoordinateSystemApp>()); // show x-y-z coordinate systems
 
     // initialize engine

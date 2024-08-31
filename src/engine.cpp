@@ -1,3 +1,4 @@
+#include "shared.h"
 #include "app/apps/coordinate_system.h"
 #include "engine.h"
 #include "mesh.h"
@@ -134,7 +135,6 @@ void Engine::render_loop() {
         { // render loop
 
             this->delta_time.tick();
-            this->draw_debug_window();
             this->input->tick(this->delta_time.get());
             // main engine projection matrix
             glm::mat4 proj = glm::perspective(
@@ -143,7 +143,7 @@ void Engine::render_loop() {
                 0.1f,
                 100.0f
             );
-            App::TickData tick_data{
+            TickData tick_data{
                 this->camera.get(),
                 std::addressof(this->texture_manager),
                 this->delta_time.get(),
@@ -152,6 +152,7 @@ void Engine::render_loop() {
             for (auto& app : this->apps) {
                 app->tick(tick_data);
             }
+            this->draw_debug_window();
         }
         { // render loop epilogue
             for (auto& app : this->apps) {
@@ -227,7 +228,7 @@ void Engine::init() {
 
     glEnable(GL_DEPTH_TEST);
 
-    App::InitData init_data{window, std::addressof(this->texture_manager)};
+    InitData init_data{window, std::addressof(this->texture_manager)};
     for (std::unique_ptr<App>& app : this->apps) {
         app->init(init_data);
     }

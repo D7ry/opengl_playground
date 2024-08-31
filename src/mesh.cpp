@@ -88,6 +88,7 @@ void PhongMesh::cleanup_gl() {
         glDeleteBuffers(1, &EBO);
 }
 
+// TODO: automatic gpu-instancing if same models are drawn for large enough numbers?
 void PhongModel::draw(
     const glm::mat4& model,
     const glm::mat4& view,

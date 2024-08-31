@@ -24,7 +24,7 @@ class Engine
 
     ~Engine() {}
 
-    // register an app to the engine. Note that 
+    // register an app to the engine. Note that
     // app should be registered before calling Engine::init()
     // for app-specific init() functions to work.
     void register_app(std::unique_ptr<App> app);
