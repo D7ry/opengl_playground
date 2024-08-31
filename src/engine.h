@@ -1,12 +1,12 @@
 #pragma once
 
+#include "app/app.h"
 #include "camera.h"
 #include "delta_time.h"
 #include "input.h"
-#include "shader.h"
 #include "mesh.h"
+#include "shader.h"
 #include "texture.h"
-#include "app/app.h"
 
 // a self-contained engine. Should be used as a singleton for each thread.
 class Engine
@@ -14,11 +14,20 @@ class Engine
   public:
     static Engine* get_singleton();
 
+    void init();
+
     void render_loop();
+
+    Engine(const std::string& window_name);
 
     Engine() = delete;
 
     ~Engine() {}
+
+    // register an app to the engine. Note that 
+    // app should be registered before calling Engine::init()
+    // for app-specific init() functions to work.
+    void register_app(std::unique_ptr<App> app);
 
   private:
     GLFWwindow* window;
@@ -44,11 +53,10 @@ class Engine
     );
 
     static void glfw_fb_resize_callback(
-        GLFWwindow* window, 
-        int width, 
-        int height);
-
-    Engine(const std::string& window_name);
+        GLFWwindow* window,
+        int width,
+        int height
+    );
 
     void bind_default_inputs();
 
@@ -68,6 +76,6 @@ class Engine
     void toggle_cursor_capture();
 
     std::vector<std::unique_ptr<App>> apps;
-
     TextureManager texture_manager;
+    std::string window_name;
 };

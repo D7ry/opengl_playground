@@ -71,7 +71,10 @@ TextureHandle TextureManager::get_texture(const char* texture_path) {
     return texture_handle;
 }
 
-TextureManager::TextureManager() { stbi_set_flip_vertically_on_load(true); }
+TextureManager::TextureManager() { 
+    // opengl's vertical tex coordinates are flipped, so flip it back at load time
+    stbi_set_flip_vertically_on_load(true); 
+}
 
 TextureManager::~TextureManager() {
     for (auto it : this->textures) {

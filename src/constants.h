@@ -20,3 +20,5 @@ inline const char* U_MODEL = "u_model";
 inline const char* U_VIEW = "u_view";
 // projection matrix uniform symbol
 inline const char* U_PROJ = "u_proj";
+
+inline const char* WINDOW_TITLE = "New Engine";

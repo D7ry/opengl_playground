@@ -51,56 +51,11 @@ void Engine::glfw_key_callback(
 }
 
 Engine::Engine(const std::string& window_name) {
-    this->apps.push_back(std::make_unique<ImGuiApp>());
-    this->apps.push_back(std::make_unique<MeshLoadingApp>());
-    this->apps.push_back(std::make_unique<CoordinateSystemApp>());
-
-    this->window = glfwCreateWindow(
-        WINDOW_WIDTH, WINDOW_HEIGHT, window_name.c_str(), NULL, NULL
-    );
-    if (!this->window) {
-        CRIT("Failed to create glfw window");
-    }
-    glfwMakeContextCurrent(this->window);
-
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-        CRIT("Failed to initialize GLAD");
-    }
-    glViewport(
-        0,            // x
-        0,            // y
-        WINDOW_WIDTH, // width
-        WINDOW_HEIGHT // height
-    );
-    glfwSetFramebufferSizeCallback(
-        this->window, Engine::glfw_fb_resize_callback
-    );
-    glfwSetKeyCallback(this->window, Engine::glfw_key_callback);
-    glfwSetCursorPosCallback(this->window, Engine::glfw_cursor_pos_callback);
-
-    this->input = std::make_unique<InputManager>();
-    this->camera = std::make_unique<Camera>(
-        glm::vec3{
-            0.f, // x
-            0.f, // y
-            0.f  // z
-        },
-        -90, // yaw
-        0,   // pitch
-        0    // roll
-    );
-    this->bind_default_inputs();
-
-    glEnable(GL_DEPTH_TEST);
-
-    App::InitData init_data{window, std::addressof(this->texture_manager)};
-    for (std::unique_ptr<App>& app : this->apps) {
-        app->init(init_data);
-    }
+    this->window_name = window_name;
 };
 
 Engine* Engine::get_singleton() {
-    static Engine singleton("New Engine");
+    static Engine singleton(WINDOW_TITLE);
     return std::addressof(singleton);
 }
 
@@ -231,4 +186,53 @@ void Engine::toggle_cursor_capture() {
         DEBUG("release cursor");
         glfwSetInputMode(this->window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
     }
+}
+
+void Engine::init() {
+    this->window = glfwCreateWindow(
+        WINDOW_WIDTH, WINDOW_HEIGHT, window_name.c_str(), NULL, NULL
+    );
+    if (!this->window) {
+        CRIT("Failed to create glfw window");
+    }
+    glfwMakeContextCurrent(this->window);
+
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+        CRIT("Failed to initialize GLAD");
+    }
+    glViewport(
+        0,            // x
+        0,            // y
+        WINDOW_WIDTH, // width
+        WINDOW_HEIGHT // height
+    );
+    glfwSetFramebufferSizeCallback(
+        this->window, Engine::glfw_fb_resize_callback
+    );
+    glfwSetKeyCallback(this->window, Engine::glfw_key_callback);
+    glfwSetCursorPosCallback(this->window, Engine::glfw_cursor_pos_callback);
+
+    this->input = std::make_unique<InputManager>();
+    this->camera = std::make_unique<Camera>(
+        glm::vec3{
+            0.f, // x
+            0.f, // y
+            0.f  // z
+        },
+        -90, // yaw
+        0,   // pitch
+        0    // roll
+    );
+    this->bind_default_inputs();
+
+    glEnable(GL_DEPTH_TEST);
+
+    App::InitData init_data{window, std::addressof(this->texture_manager)};
+    for (std::unique_ptr<App>& app : this->apps) {
+        app->init(init_data);
+    }
+}
+
+void Engine::register_app(std::unique_ptr<App> app) {
+    this->apps.push_back(std::move(app));
 }
