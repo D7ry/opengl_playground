@@ -14,9 +14,7 @@ class ISystem
 
     virtual ~ISystem() {}
 
-    void add_entity(Entity* entity) {
-        entities.push_back(entity);
-    }
+    void add_entity(Entity* entity) { entities.push_back(entity); }
 
   protected:
     std::vector<Entity*> entities;
@@ -37,17 +35,17 @@ class PhongRenderSystem : public ISystem
     ShaderProgram* shader;
 };
 
+class IDebugSystem : public ISystem
+{
+};
 
-// view all systems in debug window
-class EntityViewerSystem : public ISystem
+// view all entities in a side panel, similar to unity's object viewer
+class EntityViewerGUISystem : public IDebugSystem
 {
   public:
-      struct Node
-      {
+    EntityViewerGUISystem() {}
 
-
-      };
-
+    virtual void tick(const TickData* tick_data) override;
 };
 
 class SystemManager

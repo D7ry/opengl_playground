@@ -63,3 +63,14 @@ PhongRenderSystem::PhongRenderSystem() {
     );
     shader->build();
 }
+
+void EntityViewerGUISystem::tick(const TickData* tick_data) {
+    for (Entity* entity : this->entities) {
+        Transform* transform = entity->get_component<Transform>();
+        if (transform) {
+            ImGui::SliderFloat("Scale x", &transform->scale.x, 0, 10);
+            ImGui::SliderFloat("Scale y", &transform->scale.y, 0, 10);
+            ImGui::SliderFloat("Scale z", &transform->scale.z, 0, 10);
+        }
+    }
+}

@@ -13,7 +13,11 @@ class Entity
 
     template <typename T>
     T* get_component() {
-        return static_cast<T*>(components[std::type_index(typeid(T))]);
+        auto it = components.find(std::type_index(typeid(T)));
+        if (it == components.end()) {
+            return nullptr;
+        }
+        return static_cast<T*>(it->second);
     }
 
   private:
