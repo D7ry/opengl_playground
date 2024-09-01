@@ -66,6 +66,8 @@ PhongRenderSystem::PhongRenderSystem() {
 
 void EntityViewerGUISystem::tick(const TickData* tick_data) {
     for (Entity* entity : this->entities) {
+        ImGui::Separator();
+        ImGui::Text(entity->get_name());
         Transform* transform = entity->get_component<Transform>();
         if (transform) {
             ImGui::SliderFloat("Scale x", &transform->scale.x, 0, 10);

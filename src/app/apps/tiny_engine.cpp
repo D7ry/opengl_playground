@@ -9,7 +9,7 @@ void TinyEngineApp::init(InitData& init_data) {
     PhongRenderSystem* render_system = new PhongRenderSystem();
     EntityViewerGUISystem* ev_system = new EntityViewerGUISystem();
 
-    Entity* backpack = new Entity();
+    Entity* backpack = new Entity("backpack");
     backpack->add_component<PhongModel>("../assets/backpack.obj", init_data.texture_manager);
     backpack->add_component<Transform>();
 
