@@ -2,6 +2,7 @@
 
 #include "assimp/scene.h"
 #include "texture.h"
+#include "ecs/component.h"
 
 class ShaderProgram;
 
@@ -40,7 +41,7 @@ struct PhongMesh
     TextureHandle tex_height;   // height map
 };
 
-class PhongModel
+class PhongModel : public Component
 {
   public:
     PhongModel() = delete;

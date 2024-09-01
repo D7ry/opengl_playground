@@ -3,6 +3,7 @@
 #include "shader.h"
 #include "shared.h"
 #include "transform.h"
+#include "ecs/entity.h"
 
 #include "system.h"
 
@@ -24,10 +25,12 @@ void PhongRenderSystem::tick(const TickData* tick_data) {
     shader->set_uniform_int("t_ambient", 2);
     // TODO: enable height mapping
 
-    for (Node& node : this->nodes) {
+    for (Entity* entity: this->entities) {
+        auto transform = entity->get_component<Transform>();
+        auto model = entity->get_component<PhongModel>();
         // phong model rendering logic
-        shader->set_uniform_mat4(U_MODEL, glm::mat4(1.0));
-        for (PhongMesh& mesh : node.model->meshes) {
+        shader->set_uniform_mat4(U_MODEL, transform->model());
+        for (PhongMesh& mesh : model->meshes) {
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, mesh.tex_diffuse.id);
             glActiveTexture(GL_TEXTURE1);

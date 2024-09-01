@@ -1,5 +1,6 @@
 #pragma once
 
+class Entity;
 class TickData;
 
 class ISystem
@@ -12,6 +13,13 @@ class ISystem
     virtual void tick(const TickData* tick_data) = 0;
 
     virtual ~ISystem() {}
+
+    void add_entity(Entity* entity) {
+        entities.push_back(entity);
+    }
+
+  protected:
+    std::vector<Entity*> entities;
 };
 
 class PhongModel;
@@ -23,19 +31,23 @@ class PhongRenderSystem : public ISystem
   public:
     PhongRenderSystem();
 
-    struct Node
-    { // node contains ptr to components
-        PhongModel* model;
-        Transform* transform;
-    };
-
     virtual void tick(const TickData* tick_data) override;
 
-    void add_node(Node node) { this->nodes.push_back(std::move(node)); }
-
   private:
-    std::vector<Node> nodes;
     ShaderProgram* shader;
+};
+
+
+// view all systems in debug window
+class EntityViewerSystem : public ISystem
+{
+  public:
+      struct Node
+      {
+
+
+      };
+
 };
 
 class SystemManager
