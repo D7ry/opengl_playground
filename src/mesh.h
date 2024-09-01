@@ -57,9 +57,18 @@ class PhongModel
         ShaderProgram& shader
     );
 
-  private:
-    PhongMesh process_mesh(aiMesh* mesh, const aiScene* scene, TextureManager* texture_manager);
-    void process_node(aiNode* node, const aiScene* scene, TextureManager* texture_manager);
     std::vector<PhongMesh> meshes;
+
+  private:
+    PhongMesh process_mesh(
+        aiMesh* mesh,
+        const aiScene* scene,
+        TextureManager* texture_manager
+    );
+    void process_node(
+        aiNode* node,
+        const aiScene* scene,
+        TextureManager* texture_manager
+    );
     std::string model_path; // path to the model
 };

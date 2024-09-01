@@ -4,6 +4,7 @@
 #include "app/apps/coordinate_system.h"
 #include "app/apps/imgui_resource.h"
 #include "app/apps/phong_shading.h"
+#include "app/apps/tiny_engine.h"
 
 int main() {
     Logging::init();
@@ -20,8 +21,9 @@ int main() {
     // user-space app
     //engine->register_app(std::make_unique<SimpleTriangleApp>()); // just 2 triangles
     engine->register_app(std::make_unique<CoordinateSystemApp>()); // show x-y-z coordinate systems
-    engine->register_app(std::make_unique<PhongShadingApp>()); // phong shading
+    //engine->register_app(std::make_unique<PhongShadingApp>()); // phong shading
 
+    engine->register_app(std::make_unique<TinyEngineApp>());
     // initialize engine
     engine->init();
 

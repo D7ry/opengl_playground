@@ -45,6 +45,8 @@ add_executable(${PROJECT_NAME}
     src/app/apps/coordinate_system.cpp
     src/app/apps/imgui_resource.cpp
     src/app/apps/phong_shading.cpp
+    src/app/apps/tiny_engine.cpp
+    src/ecs/system.cpp
 )
 
 # library sources
